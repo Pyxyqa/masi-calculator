@@ -123,8 +123,8 @@
     <div class="section">
       <p class="step"><span class="num">1</span>Ce invertor ai acum?</p>
       <div class="opts" id="invs"></div>
-      <div class="sub" id="newInvBox" hidden>
-        <p class="lbl">Ce invertor hibrid dorești? <span style="font-weight:500;color:var(--muted)">(pentru on-grid e nevoie de unul nou)</span></p>
+      <div class="sub" id="newInvBox">
+        <p class="lbl">Invertor nou <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
         <div class="opts" id="newInvs"></div>
       </div>
     </div>
@@ -192,7 +192,7 @@
 </div>
 </main>
 <footer>
-  Estimare orientativă după draftul ghidului AFM Casa Verde Baterii 2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou (la on-grid) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
+  Estimare orientativă după draftul ghidului AFM Casa Verde Baterii 2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye (obligatoriu la on-grid, opțional în rest) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
   MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · 0763 900 411 / 0744 614 511
 </footer>
 <script>
@@ -220,8 +220,17 @@ const INVS=[
   {id:'fro',  name:'Invertor hibrid Fronius', d:'Symo / Primo GEN24 Plus'},
   {id:'other',name:'Invertor hibrid de altă marcă', d:'verificăm compatibilitatea'},
   {id:'grid', name:'Invertor on-grid', d:'nu e hibrid – montăm unul nou'},
-  {id:'ns',   name:'Nu știu', d:'te ajutăm noi să afli'}
+  {id:'unk',  name:'Invertorul meu nu e în listă', d:'verificăm ce baterie compatibilă avem'},
+  {id:'swap', name:'Am invertor hibrid, dar vreau alt invertor hibrid', d:'alegi mai jos invertorul Deye nou'}
 ];
+const NEED_NEW=id=>id==='grid'||id==='swap';
+// compatibilitate baterii: invertor nou Deye -> doar LV; Huawei -> LUNA; Fronius -> Reserva sau BYD
+function allowed(){
+  if(S.newInv&&S.newInv!=='keep')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
+  if(S.inv==='hua')return {ids:['LUN5','LUN7'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000. Pentru altă baterie alege un invertor nou Deye.'};
+  if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou Deye.'};
+  return null;
+}
 const S={nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
 const $=id=>document.getElementById(id);
 const lei=n=>Math.round(n).toLocaleString('ro-RO')+' lei';
@@ -235,8 +244,8 @@ function mkOpts(el,list,key,onPick){
     b.innerHTML=`<b>${o.name}</b>${o.d?`<span>${o.d}</span>`:''}`;
     b.onclick=()=>{if(b.disabled)return;S[key]=o.id;onPick&&onPick(o);render()};el.appendChild(b);});
 }
-mkOpts($('invs'),INVS,'inv',o=>{if(o.id!=='grid')S.newInv=null;});
-mkOpts($('newInvs'),NEWINV,'newInv');
+mkOpts($('invs'),INVS,'inv',o=>{if(NEED_NEW(o.id)&&S.newInv==='keep')S.newInv=null;});
+mkOpts($('newInvs'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără invertor nou'}].concat(NEWINV),'newInv');
 mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
   S.mods=Math.max(1,Math.ceil(10/b.kwh-1e-9));});
@@ -251,7 +260,7 @@ function calc(){
   const b=BATS.find(x=>x.id===S.bat); if(!b) return null;
   const kwh=S.mods*b.kwh;
   const batTot=S.mods*b.mod+b.fix;
-  const ni=S.inv==='grid'?NEWINV.find(x=>x.id===S.newInv):null;
+  const ni=NEWINV.find(x=>x.id===S.newInv)||null;
   const inv=ni?ni.price:0;
   const tot=batTot+inv;
   const afmMax=Math.min(15000,0.75*batTot);
@@ -267,23 +276,32 @@ function calc(){
 function render(fromInput){
   // marcaje
   $('invs').querySelectorAll('.opt').forEach(e=>e.setAttribute('aria-pressed',e.dataset.id===S.inv));
-  $('newInvBox').hidden=S.inv!=='grid';
-  $('newInvs').querySelectorAll('.opt').forEach(e=>e.setAttribute('aria-pressed',e.dataset.id===S.newInv));
-  const onlyLV=S.inv==='grid';
-  if(onlyLV&&S.bat&&BATS.find(x=>x.id===S.bat).type==='HV')S.bat=null;
-  $('bats').querySelectorAll('.opt').forEach(e=>{const b=BATS.find(x=>x.id===e.dataset.id);
-    e.disabled=onlyLV&&b.type==='HV';e.setAttribute('aria-pressed',e.dataset.id===S.bat);});
-  $('batHint').textContent=onlyLV?'Cu invertor on-grid montăm un invertor hibrid Deye, compatibil doar cu bateriile Felicity Solar, Dyness și Deye.':'';
+  $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid Deye)':'(opțional – dacă vrei să schimbi invertorul)';
+  $('newInvs').querySelectorAll('.opt').forEach(e=>{e.disabled=e.dataset.id==='keep'&&NEED_NEW(S.inv);e.setAttribute('aria-pressed',e.dataset.id===S.newInv);});
+  const al=allowed();
+  if(al&&S.bat&&!al.ids.includes(S.bat)){S.bat=null;}
+  $('bats').querySelectorAll('.opt').forEach(e=>{e.disabled=!!al&&!al.ids.includes(e.dataset.id);e.setAttribute('aria-pressed',e.dataset.id===S.bat);});
+  $('batHint').textContent=al?al.why:'';
   $('mods').textContent=S.mods;
   $('mode').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===S.mode));
   $('prior').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.p===S.prior));
   $('customBox').hidden=S.mode!=='custom';
   if(!fromInput)$('cIn').value=S.c;
 
+  const stop=S.inv==='unk';
+  $('newInvBox').hidden=stop;
+  document.querySelectorAll('main .section').forEach((el,i)=>{if(i>=2)el.hidden=stop;});
+  if(stop){
+    $('capTxt').textContent='–';
+    show(null,[['warn','Pentru invertorul tău verificăm disponibilitatea unei baterii compatibile. Trimite-ne datele (marca și modelul invertorului) prin formular sau sună-ne și revenim cu o ofertă.']],true);
+    $('cta').classList.remove('off');$('cta').textContent='Trimite-ne datele invertorului →';
+    return;
+  }
+  $('cta').textContent='Mă înscriu cu această variantă →';
   const r=calc();
   const msgs=[];let blocked=false;
   if(!S.inv)msgs.push(['tip','Începe cu pasul 1: ce invertor ai acum.']);
-  if(S.inv==='grid'&&!S.newInv){msgs.push(['tip','Alege invertorul hibrid Deye pe care îl dorești.']);blocked=true;}
+  if(NEED_NEW(S.inv)&&!(S.newInv&&S.newInv!=='keep')){msgs.push(['tip','Alege invertorul hibrid Deye nou pe care îl dorești.']);blocked=true;}
   if(!r){
     $('capTxt').textContent='–';
     if(S.inv)msgs.push(['tip','Alege bateria la pasul 2.']);
