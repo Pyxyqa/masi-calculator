@@ -224,6 +224,7 @@ const NEWINV=[
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
   {id:'fro',  name:'Invertor hibrid Fronius', d:'Symo / Primo GEN24 Plus'},
+  {id:'vic',  name:'Invertor hibrid Victron', d:'MultiPlus / Quattro'},
   {id:'grid', name:'Invertor on-grid', d:'nu e hibrid – montăm unul nou'},
   {id:'unk',  name:'Altă marcă / invertorul meu nu e în listă', d:'ne spui modelul și verificăm'},
   {id:'swap', name:'Am invertor hibrid, dar vreau alt invertor hibrid', d:'alegi mai jos invertorul Deye nou'}
@@ -233,6 +234,7 @@ const NEED_NEW=id=>id==='grid'||id==='swap';
 function allowed(){
   if(S.newInv&&S.newInv!=='keep')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='hua')return {ids:['LUN5','LUN7'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000. Pentru altă baterie alege un invertor nou Deye.'};
+  if(S.inv==='vic')return {ids:['FEL16','FEL23.5'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar. Pentru altă baterie alege un invertor nou Deye.'};
   if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou Deye.'};
   return null;
 }
