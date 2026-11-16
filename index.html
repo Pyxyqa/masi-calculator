@@ -123,6 +123,12 @@
     <div class="section">
       <p class="step"><span class="num">1</span>Ce invertor ai acum?</p>
       <div class="opts" id="invs"></div>
+      <div class="sub" id="unkBox" hidden>
+        <div class="who">
+          <label class="wide">Marca și modelul invertorului<input id="invTip" placeholder="ex. SMA Sunny Tripower 8.0"></label>
+          <label class="wide">Telefon (ca să revenim cu răspunsul)<input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="07xx xxx xxx"></label>
+        </div>
+      </div>
       <div class="sub" id="newInvBox">
         <p class="lbl">Invertor nou <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
         <div class="opts" id="newInvs"></div>
@@ -218,9 +224,8 @@ const NEWINV=[
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
   {id:'fro',  name:'Invertor hibrid Fronius', d:'Symo / Primo GEN24 Plus'},
-  {id:'other',name:'Invertor hibrid de altă marcă', d:'verificăm compatibilitatea'},
   {id:'grid', name:'Invertor on-grid', d:'nu e hibrid – montăm unul nou'},
-  {id:'unk',  name:'Invertorul meu nu e în listă', d:'verificăm ce baterie compatibilă avem'},
+  {id:'unk',  name:'Altă marcă / invertorul meu nu e în listă', d:'ne spui modelul și verificăm'},
   {id:'swap', name:'Am invertor hibrid, dar vreau alt invertor hibrid', d:'alegi mai jos invertorul Deye nou'}
 ];
 const NEED_NEW=id=>id==='grid'||id==='swap';
@@ -231,11 +236,12 @@ function allowed(){
   if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou Deye.'};
   return null;
 }
-const S={nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
+const S={tip:'',tel:'',nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
 const $=id=>document.getElementById(id);
 const lei=n=>Math.round(n).toLocaleString('ro-RO')+' lei';
 const pts=n=>(Math.round(n*10)/10).toLocaleString('ro-RO');
 const kwhTxt=n=>(Math.round(n*100)/100).toLocaleString('ro-RO')+' kWh';
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 function mkOpts(el,list,key,onPick){
@@ -253,7 +259,7 @@ $('minus').onclick=()=>{S.mods=Math.max(1,S.mods-1);render()};
 $('plus').onclick=()=>{S.mods=Math.min(20,S.mods+1);render()};
 $('mode').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;render()});
 $('prior').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.prior=+b.dataset.p;render()});
-['nume','loc','jud'].forEach(k=>$(k).oninput=e=>{S[k]=e.target.value.trim();render(true)});
+['nume','loc','jud','invTip','tel'].forEach(k=>$(k).oninput=e=>{S[k==='invTip'?'tip':k]=e.target.value.trim();render(true)});
 $('cIn').oninput=e=>{S.c=Math.max(0,+e.target.value||0);render(true)};
 
 function calc(){
@@ -291,12 +297,19 @@ function render(fromInput){
   const stop=S.inv==='unk';
   $('newInvBox').hidden=stop;
   document.querySelectorAll('main .section').forEach((el,i)=>{if(i>=2)el.hidden=stop;});
+  $('unkBox').hidden=!stop;
+  $('scoreBox').hidden=stop;$('copy').style.display=stop?'none':'';$('copied').textContent='';
   if(stop){
     $('capTxt').textContent='–';
-    show(null,[['warn','Pentru invertorul tău verificăm disponibilitatea unei baterii compatibile. Trimite-ne datele (marca și modelul invertorului) prin formular sau sună-ne și revenim cu o ofertă.']],true);
-    $('cta').classList.remove('off');$('cta').textContent='Trimite-ne datele invertorului →';
+    const ok=S.tip.length>=2;
+    show(null,[ok?['tip',`✅ Mulțumim! Verificăm disponibilitatea unei baterii compatibile cu invertorul <b>${esc(S.tip)}</b> și revenim cu răspunsul${S.tel?' la '+esc(S.tel):''}.`]:['warn','Scrie marca și modelul invertorului tău (le găsești pe eticheta laterală a invertorului).']],true);
+    const body=`Bună ziua, vreau o baterie prin Casa Verde Baterii 2026.\nNume: ${S.nume||'-'}\nLocalitate: ${S.loc||'-'}, jud. ${S.jud||'-'}\nTelefon: ${S.tel||'-'}\nInvertor actual: ${S.tip}\nVă rog să verificați ce baterie compatibilă aveți.`;
+    $('cta').href='mailto:m.sima@masismartenergy.ro?subject='+encodeURIComponent('Verificare baterie compatibilă – '+S.tip)+'&body='+encodeURIComponent(body);
+    $('cta').removeAttribute('target');
+    $('cta').classList.toggle('off',!ok);$('cta').textContent='Trimite-ne datele →';
     return;
   }
+  $('cta').href='https://tally.so/r/6Dj9kN';$('cta').target='_blank';
   $('cta').textContent='Mă înscriu cu această variantă →';
   const r=calc();
   const msgs=[];let blocked=false;
