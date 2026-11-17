@@ -289,7 +289,7 @@
 </div>
 </main>
 <footer>
-  Estimare orientativă după draftul ghidului AFM Casa Verde Baterii 2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye (obligatoriu la on-grid, opțional în rest) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
+  Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye (obligatoriu la on-grid, opțional în rest) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
   MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · 0763 900 411 / 0744 614 511
 </footer>
 <script>
@@ -319,7 +319,7 @@ const INVS=[
   {id:'vic',  name:'Invertor hibrid Victron', d:'MultiPlus / Quattro'},
   {id:'grid', name:'Invertor on-grid', d:'nu e hibrid – montăm unul nou'},
   {id:'unk',  name:'Altă marcă / invertorul meu nu e în listă', d:'ne spui modelul și verificăm'},
-  {id:'swap', name:'Am invertor hibrid, dar vreau alt invertor hibrid', d:'alegi mai jos invertorul Deye nou'}
+  {id:'swap', name:'Am invertor hibrid, dar vreau alt invertor hibrid', d:'alegi mai jos invertorul nou'}
 ];
 const NEED_NEW=id=>id==='grid'||id==='swap';
 // compatibilitate baterii: invertor nou Deye -> doar LV; Huawei -> LUNA; Fronius -> Reserva sau BYD
@@ -343,7 +343,7 @@ function mkOpts(el,list,key,onPick){
   el.innerHTML='';
   list.forEach(o=>{const b=document.createElement('button');b.className='opt';b.dataset.id=o.id;
     b.innerHTML=`<b>${o.name}</b>${o.d?`<span>${o.d}</span>`:''}`;
-    b.onclick=()=>{if(b.disabled)return;S[key]=o.id;onPick&&onPick(o);render()};el.appendChild(b);});
+    b.onclick=()=>{if(b.disabled)return;S[key]=(o.id==='keep'&&S[key]==='keep')?null:o.id;onPick&&onPick(o);render()};el.appendChild(b);});
 }
 mkOpts($('invs'),INVS,'inv',o=>{if(NEED_NEW(o.id)&&S.newInv==='keep')S.newInv=null;});
 mkOpts($('newKeep'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără invertor nou'}],'newInv');
@@ -380,12 +380,12 @@ function calc(){
 function render(fromInput){
   // marcaje
   $('invs').querySelectorAll('.opt').forEach(e=>e.setAttribute('aria-pressed',e.dataset.id===S.inv));
-  $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid Deye)':'(opțional – dacă vrei să schimbi invertorul)';
+  $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid Deye)':S.newInv==='keep'?'(păstrezi invertorul actual – apasă din nou pe buton dacă vrei unul nou)':'(opțional – dacă vrei să schimbi invertorul)';
   $('phase').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ph===S.ph));
   const curNi=NEWINV.find(x=>x.id===S.newInv); if(curNi&&S.ph&&curNi.ph!==S.ph)S.newInv=null;
-  ['M','T'].forEach(ph=>$('col'+ph).classList.toggle('off',!!S.ph&&S.ph!==ph));
+  ['M','T'].forEach(ph=>$('col'+ph).classList.toggle('off',S.newInv==='keep'||(!!S.ph&&S.ph!==ph)));
   $('newInvBox').querySelectorAll('.opt').forEach(e=>{const n=NEWINV.find(x=>x.id===e.dataset.id);
-    e.disabled=(e.dataset.id==='keep'&&NEED_NEW(S.inv))||(!!n&&!!S.ph&&n.ph!==S.ph);e.setAttribute('aria-pressed',e.dataset.id===S.newInv);});
+    e.disabled=(e.dataset.id==='keep'&&NEED_NEW(S.inv))||(!!n&&S.newInv==='keep')||(!!n&&!!S.ph&&n.ph!==S.ph);e.setAttribute('aria-pressed',e.dataset.id===S.newInv);});
   const al=allowed();
   if(al&&S.bat&&!al.ids.includes(S.bat)){S.bat=null;}
   $('bats').querySelectorAll('.opt').forEach(e=>{e.disabled=!!al&&!al.ids.includes(e.dataset.id);e.setAttribute('aria-pressed',e.dataset.id===S.bat);});
@@ -451,7 +451,7 @@ function show(r,msgs,blocked){
     box.classList.remove('dim');
     const t=Math.round(r.total*10)/10;
     $('score').textContent=pts(t);$('arc').style.strokeDashoffset=490*(1-Math.min(100,t)/100);
-    $('verdict').textContent=t>=99.95?'Punctaj maxim – cele mai bune șanse 🎉':t>=85?'Punctaj foarte bun':t>=70?'Punctaj bun':'Punctaj mai mic – vezi sfaturile de mai jos';
+    $('verdict').textContent=t>=99.95?'Punctaj maxim – cele mai bune șanse 🎉':t>90?'Punctaj bun':t>=75?'Punctaj slab – vezi sfaturile de mai jos':'Punctaj foarte slab – vezi sfaturile de mai jos';
     $('bars').innerHTML=bars(r);
     $('pay').textContent=lei(r.contrib);$('afm').textContent=lei(r.afm);$('tot').textContent=lei(r.tot);
     $('incl').textContent=r.inv?`Baterie ${lei(r.batTot)} + invertor ${r.ni.name} ${lei(r.inv)}. Instalare, configurare, verificare priză de pământ și punere în funcțiune incluse.`:'BMS și actualizare dosar prosumator incluse.';
