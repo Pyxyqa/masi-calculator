@@ -95,6 +95,35 @@
   .copy{all:unset;cursor:pointer;display:block;text-align:center;margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-weight:600;font-size:14px;color:var(--navy);width:100%;box-sizing:border-box}
   .copy:hover{border-color:var(--blue)}
   .copied{text-align:center;font-size:12.5px;color:var(--green);margin:6px 0 0;min-height:16px;word-break:break-word}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:480px){.cols{grid-template-columns:1fr}}
+  .col{border-radius:14px;padding:10px;display:grid;gap:8px;align-content:start}
+  .col .colh{margin:0 2px 2px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .col.mono{background:#E8F0FF;border:1.5px solid #BFD3FF}.col.mono .colh{color:#1D4ED8}
+  .col.tri{background:#FFF1E2;border:1.5px solid #FBD3A6}.col.tri .colh{color:#C2410C}
+  .col.mono .opt[aria-pressed="true"]{border-color:#1D4ED8;background:#fff;box-shadow:0 0 0 3px rgba(29,78,216,.18)}
+  .col.tri .opt[aria-pressed="true"]{border-color:#EA580C;background:#fff;box-shadow:0 0 0 3px rgba(234,88,12,.18)}
+  .col.off{opacity:.45}
+  #newKeep{grid-template-columns:1fr}
+  .docs{margin-top:18px}
+  .docs h2{font-size:20px;margin:0 0 6px;font-weight:800}
+  .docs .lead{font-size:14px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+  .pdfnote{background:#FFF7E6;color:#7A3E06;border:1.5px solid #F7D9A6;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.5;margin:14px 0}
+  .doc{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;border:1.5px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:#fff}
+  .doc.ok{border-color:#9CD8AE;background:#F4FBF6}.doc.bad{border-color:#F3B4AE;background:#FEF6F5}
+  .doc .k{width:30px;height:30px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-weight:800;font-size:13px}
+  .doc.ok .k{background:var(--green);color:#fff}
+  .doc b{font-size:14.5px}.doc .req{font-size:11.5px;font-weight:700;color:var(--muted);margin-left:6px;text-transform:uppercase;letter-spacing:.04em}
+  .doc p{margin:3px 0 8px;font-size:12.5px;color:var(--muted);line-height:1.45}
+  .doc input[type=file]{font:inherit;font-size:13px;max-width:100%}
+  .doc .st{font-size:12.5px;margin-top:6px;font-weight:600}.doc.ok .st{color:var(--green)}.doc.bad .st{color:var(--err)}
+  .chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;margin-top:12px;cursor:pointer}
+  .chk input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--blue)}
+  .send{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;text-align:center;margin-top:16px;background:var(--green);color:#fff;font-weight:800;padding:15px;border-radius:12px;font-size:16px}
+  .send:disabled{background:#B8C7B9;cursor:not-allowed}
+  .sendinfo{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
+  .banner{background:#EEF9F1;border:1.5px solid #9CD8AE;border-radius:14px;padding:14px 16px;font-size:15px;margin-bottom:16px;line-height:1.5}
+  .total{font-size:12.5px;color:var(--muted);margin-top:10px}
   footer{max-width:1000px;margin:6px auto 0;font-size:12px;color:var(--muted);line-height:1.55;padding:0 16px 30px}
 </style>
 </head>
@@ -129,9 +158,20 @@
           <label class="wide">Telefon (ca să revenim cu răspunsul)<input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="07xx xxx xxx"></label>
         </div>
       </div>
+      <div class="sub">
+        <p class="lbl">Ce branșament ai?</p>
+        <div class="seg two" id="phase">
+          <button data-ph="M" aria-pressed="false">Monofazat<small>230 V · o fază</small></button>
+          <button data-ph="T" aria-pressed="false">Trifazat<small>400 V · trei faze</small></button>
+        </div>
+      </div>
       <div class="sub" id="newInvBox">
-        <p class="lbl">Invertor nou <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
-        <div class="opts" id="newInvs"></div>
+        <p class="lbl">Invertor nou Deye <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
+        <div class="opts" id="newKeep"></div>
+        <div class="cols">
+          <div class="col mono" id="colM"><p class="colh">Monofazat</p></div>
+          <div class="col tri" id="colT"><p class="colh">Trifazat</p></div>
+        </div>
       </div>
     </div>
     <div class="section">
@@ -192,9 +232,60 @@
     <div id="msgs"></div>
     <button class="copy" id="copy">Copiază simularea mea</button>
     <p class="copied" id="copied"></p>
-    <a class="cta" id="cta" href="https://tally.so/r/6Dj9kN" target="_blank" rel="noopener">Mă înscriu cu această variantă →</a>
+    <a class="cta" id="cta" href="#docs">Mă înscriu cu această variantă →</a>
     <p class="phone">Sau sună-ne: <a href="tel:0763900411">0763 900 411</a> / <a href="tel:0744614511">0744 614 511</a></p>
   </aside>
+</div>
+<div class="wrap">
+  <section class="card docs" id="docs" hidden>
+    <div class="banner" id="sent" hidden></div>
+    <h2>6 · Înscrierea în program</h2>
+    <p class="lead">Varianta aleasă: <b id="dVar">–</b></p>
+    <div id="svcBox">
+      <p class="step" style="margin-top:6px">Vrei să te înscriem noi în aplicația AFM?</p>
+      <div class="seg two" id="svc">
+        <button type="button" data-v="1" aria-pressed="false">Da, înscrieți-mă voi<small>completăm cererea și încărcăm dosarul</small></button>
+        <button type="button" data-v="0" aria-pressed="false">Nu, mă înscriu singur<small>voi doar montați bateria</small></button>
+      </div>
+      <div class="sub" id="svcYes" hidden>
+        <p style="margin:0;font-size:15px">Serviciul de înscriere în aplicația AFM costă <b style="font-size:20px">250,00 lei</b>.</p>
+        <label class="chk"><input type="checkbox" id="svcOk">Accept costul de 250,00 lei pentru înscrierea în programul Casa Verde Baterii 2026 de către MASI Smart Energy.</label>
+      </div>
+      <div class="tip" id="svcNo" hidden>Bine! Te înscrii singur în aplicația AFM, iar noi montăm bateria după aprobare. Pentru ofertă sau întrebări sună-ne la <b>0763 900 411</b> / <b>0744 614 511</b>.</div>
+    </div>
+    <form id="docForm" hidden style="margin-top:16px" action="https://formsubmit.co/m.sima@masismartenergy.ro" method="POST" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="_subject" id="fSubj" value="Dosar Casa Verde Baterii 2026">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" id="fNext">
+      <input type="hidden" name="Varianta aleasa" id="fVar">
+      <input type="hidden" name="Localitate si judet montaj" id="fLoc">
+      <input type="hidden" name="Serviciu inscriere AFM" value="DA – acceptat 250,00 lei">
+      <div class="who">
+        <label class="wide">Nume și prenume<input name="Nume" id="dNume" autocomplete="name" required></label>
+        <label>Telefon<input name="Telefon" id="dTel" type="tel" inputmode="tel" autocomplete="tel" required></label>
+        <label>E-mail<input name="email" id="dMail" type="email" autocomplete="email" required></label>
+        <label class="wide">Adresa de domiciliu (stradă, nr., localitate, județ)<input name="Adresa domiciliu" id="dAdr" autocomplete="street-address" required></label>
+      </div>
+      <label class="chk"><input type="checkbox" id="dDiff">Adresa unde se montează sistemul este diferită de domiciliu</label>
+      <div class="who" id="dMontBox" hidden style="margin-top:10px">
+        <label class="wide">Adresa de montaj (stradă, nr.)<input name="Adresa montaj" id="dMont"></label>
+      </div>
+      <p class="step" style="margin-top:18px">Documentele pentru dosar</p>
+      <div class="pdfnote">📄 <b>Încarcă documentele așa cum le-ai primit</b> – online, pe e-mail sau scanate la scanner – <b>doar în format PDF</b>. Nu acceptăm poze făcute cu telefonul. Maximum 3 MB pe document și 9 MB în total.</div>
+        <div class="doc" id="d_b"><span class="k">b</span><div><b>Act de identitate</b><span class="req">obligatoriu</span><p>valabil la data înscrierii; scanat la scanner, nu fotografiat</p><input type="file" name="b_Act_de_identitate" accept="application/pdf,.pdf" data-k="b"><div class="st"></div></div></div>
+        <div class="doc" id="d_c"><span class="k">c</span><div><b>Certificat de atestare fiscală – buget de stat (ANAF)</b><span class="req">obligatoriu</span><p>emis pe numele solicitantului, în termen de valabilitate</p><input type="file" name="c_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="c"><div class="st"></div></div></div>
+        <div class="doc" id="d_d"><span class="k">d</span><div><b>Certificat de atestare fiscală – taxe locale, primăria de domiciliu</b><span class="req">obligatoriu</span><p>emis de primăria unde ai domiciliul, în termen de valabilitate</p><input type="file" name="d_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="d"><div class="st"></div></div></div>
+        <div class="doc" id="d_e" hidden><span class="k">e</span><div><b>Certificat de atestare fiscală – taxe locale, primăria unde se montează sistemul</b><span class="req">doar dacă montajul e la altă adresă</span><p>emis de primăria localității de montaj, în termen de valabilitate</p><input type="file" name="e_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="e"><div class="st"></div></div></div>
+        <div class="doc" id="d_f"><span class="k">f</span><div><b>Contract de prosumator</b><span class="req">obligatoriu</span><p>pe numele solicitantului, pentru locul de consum la care sunt racordate panourile</p><input type="file" name="f_Contract_de_prosumator" accept="application/pdf,.pdf" data-k="f"><div class="st"></div></div></div>
+        <div class="doc" id="d_g"><span class="k">g</span><div><b>Certificat de racordare</b><span class="req">obligatoriu</span><p>pentru același loc de consum ca în contractul de prosumator</p><input type="file" name="g_Certificat_de_racordare" accept="application/pdf,.pdf" data-k="g"><div class="st"></div></div></div>
+        <div class="doc" id="d_h"><span class="k">h</span><div><b>Factură de energie electrică</b><span class="req">obligatoriu</span><p>pe numele solicitantului, același loc de consum, nu mai veche de 6 luni</p><input type="file" name="h_Factură_de_energie_electrică" accept="application/pdf,.pdf" data-k="h"><div class="st"></div></div></div>
+      <p class="total" id="dTot"></p>
+      <label class="chk"><input type="checkbox" id="dGdpr" required>Sunt de acord ca MASI Smart Energy S.R.L. să prelucreze datele și documentele mele pentru pregătirea dosarului Casa Verde Baterii 2026. Ele ne sunt transmise pe e-mail prin serviciul FormSubmit.</label>
+      <button class="send" id="dSend" type="submit" disabled>Trimite documentele</button>
+      <p class="sendinfo" id="dInfo"></p>
+    </form>
+  </section>
 </div>
 </main>
 <footer>
@@ -214,16 +305,17 @@ const BATS=[
   {id:'RES3.97',name:'Fronius Reserva 3,97 kWh', kwh:3.97,  mod:8200,  fix:5600+5000, type:'HV'}
 ];
 const NEWINV=[
-  {id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3500},
-  {id:'DEY8M', name:'Deye SUN-8K-SG06LP1', d:'8 kW · monofazat',  price:6100+3500},
-  {id:'DEY6T', name:'Deye SUN-6K-SG05LP3', d:'6 kW · trifazat',   price:8200+3500},
-  {id:'DEY8T', name:'Deye SUN-8K-SG05LP3', d:'8 kW · trifazat',   price:8600+3500},
-  {id:'DEY10T',name:'Deye SUN-10K-SG05LP3',d:'10 kW · trifazat',  price:9000+3500},
-  {id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3500}
+  {ph:'M',id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3500},
+  {ph:'M',id:'DEY8M', name:'Deye SUN-8K-SG06LP1', d:'8 kW · monofazat',  price:6100+3500},
+  {ph:'T',id:'DEY6T', name:'Deye SUN-6K-SG05LP3', d:'6 kW · trifazat',   price:8200+3500},
+  {ph:'T',id:'DEY8T', name:'Deye SUN-8K-SG05LP3', d:'8 kW · trifazat',   price:8600+3500},
+  {ph:'T',id:'DEY10T',name:'Deye SUN-10K-SG05LP3',d:'10 kW · trifazat',  price:9000+3500},
+  {ph:'T',id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3500}
 ];
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
   {id:'fro',  name:'Invertor hibrid Fronius', d:'Symo / Primo GEN24 Plus'},
+  {id:'dey',  name:'Invertor hibrid Deye', d:'SUN-…-SG LP1 / LP3'},
   {id:'vic',  name:'Invertor hibrid Victron', d:'MultiPlus / Quattro'},
   {id:'grid', name:'Invertor on-grid', d:'nu e hibrid – montăm unul nou'},
   {id:'unk',  name:'Altă marcă / invertorul meu nu e în listă', d:'ne spui modelul și verificăm'},
@@ -234,11 +326,12 @@ const NEED_NEW=id=>id==='grid'||id==='swap';
 function allowed(){
   if(S.newInv&&S.newInv!=='keep')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='hua')return {ids:['LUN5','LUN7'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000. Pentru altă baterie alege un invertor nou Deye.'};
+  if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='vic')return {ids:['FEL16','FEL23.5'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar. Pentru altă baterie alege un invertor nou Deye.'};
   if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou Deye.'};
   return null;
 }
-const S={tip:'',tel:'',nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
+const S={ph:null,tip:'',tel:'',nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
 const $=id=>document.getElementById(id);
 const lei=n=>Math.round(n).toLocaleString('ro-RO')+' lei';
 const pts=n=>(Math.round(n*10)/10).toLocaleString('ro-RO');
@@ -253,7 +346,10 @@ function mkOpts(el,list,key,onPick){
     b.onclick=()=>{if(b.disabled)return;S[key]=o.id;onPick&&onPick(o);render()};el.appendChild(b);});
 }
 mkOpts($('invs'),INVS,'inv',o=>{if(NEED_NEW(o.id)&&S.newInv==='keep')S.newInv=null;});
-mkOpts($('newInvs'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără invertor nou'}].concat(NEWINV),'newInv');
+mkOpts($('newKeep'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără invertor nou'}],'newInv');
+['M','T'].forEach(ph=>{const box=document.createElement('div');box.style.display='grid';box.style.gap='8px';$('col'+ph).appendChild(box);
+  mkOpts(box,NEWINV.filter(x=>x.ph===ph).map(x=>({id:x.id,name:x.name,d:x.d.split('·')[0].trim()})),'newInv');});
+$('phase').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.ph=b.dataset.ph;render()});
 mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
   S.mods=Math.max(1,Math.ceil(10/b.kwh-1e-9));});
@@ -285,7 +381,11 @@ function render(fromInput){
   // marcaje
   $('invs').querySelectorAll('.opt').forEach(e=>e.setAttribute('aria-pressed',e.dataset.id===S.inv));
   $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid Deye)':'(opțional – dacă vrei să schimbi invertorul)';
-  $('newInvs').querySelectorAll('.opt').forEach(e=>{e.disabled=e.dataset.id==='keep'&&NEED_NEW(S.inv);e.setAttribute('aria-pressed',e.dataset.id===S.newInv);});
+  $('phase').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ph===S.ph));
+  const curNi=NEWINV.find(x=>x.id===S.newInv); if(curNi&&S.ph&&curNi.ph!==S.ph)S.newInv=null;
+  ['M','T'].forEach(ph=>$('col'+ph).classList.toggle('off',!!S.ph&&S.ph!==ph));
+  $('newInvBox').querySelectorAll('.opt').forEach(e=>{const n=NEWINV.find(x=>x.id===e.dataset.id);
+    e.disabled=(e.dataset.id==='keep'&&NEED_NEW(S.inv))||(!!n&&!!S.ph&&n.ph!==S.ph);e.setAttribute('aria-pressed',e.dataset.id===S.newInv);});
   const al=allowed();
   if(al&&S.bat&&!al.ids.includes(S.bat)){S.bat=null;}
   $('bats').querySelectorAll('.opt').forEach(e=>{e.disabled=!!al&&!al.ids.includes(e.dataset.id);e.setAttribute('aria-pressed',e.dataset.id===S.bat);});
@@ -300,6 +400,7 @@ function render(fromInput){
   $('newInvBox').hidden=stop;
   document.querySelectorAll('main .section').forEach((el,i)=>{if(i>=2)el.hidden=stop;});
   $('unkBox').hidden=!stop;
+  if(stop)$('docs').hidden=true;
   $('scoreBox').hidden=stop;$('copy').style.display=stop?'none':'';$('copied').textContent='';
   if(stop){
     $('capTxt').textContent='–';
@@ -311,11 +412,12 @@ function render(fromInput){
     $('cta').classList.toggle('off',!ok);$('cta').textContent='Trimite-ne datele →';
     return;
   }
-  $('cta').href='https://tally.so/r/6Dj9kN';$('cta').target='_blank';
+  $('cta').href='#docs';
   $('cta').textContent='Mă înscriu cu această variantă →';
   const r=calc();
   const msgs=[];let blocked=false;
   if(!S.inv)msgs.push(['tip','Începe cu pasul 1: ce invertor ai acum.']);
+  if(!S.ph&&S.inv&&S.inv!=='unk')msgs.push(['tip','Spune-ne și ce branșament ai: monofazat sau trifazat.']);
   if(NEED_NEW(S.inv)&&!(S.newInv&&S.newInv!=='keep')){msgs.push(['tip','Alege invertorul hibrid Deye nou pe care îl dorești.']);blocked=true;}
   if(!r){
     $('capTxt').textContent='–';
@@ -356,14 +458,77 @@ function show(r,msgs,blocked){
     $('cta').classList.remove('off');
     const inv=INVS.find(x=>x.id===S.inv);
     const cine=[S.nume,[S.loc,S.jud?'jud. '+S.jud:''].filter(Boolean).join(', ')].filter(Boolean).join(' – ');
-    window.__summary=`Simulare Casa Verde Baterii 2026 (MASI)${cine?' – '+cine:''}: invertor actual ${inv?inv.name.toLowerCase():'-'}${r.ni?', invertor nou '+r.ni.name:''}; baterie ${S.mods} × ${r.b.name} = ${kwhTxt(r.kwh)}; valoare proiect ${lei(r.tot)}, plătesc eu ${lei(r.contrib)}, AFM ${lei(r.afm)}; ${S.prior?'am':'nu am'} mai primit bani publici pentru baterie → ${pts(t)} puncte.`;
+    window.__summary=`Simulare Casa Verde Baterii 2026 (MASI)${cine?' – '+cine:''}: branșament ${S.ph==='M'?'monofazat':S.ph==='T'?'trifazat':'-'}; invertor actual ${inv?inv.name.toLowerCase():'-'}${r.ni?', invertor nou '+r.ni.name:''}; baterie ${S.mods} × ${r.b.name} = ${kwhTxt(r.kwh)}; valoare proiect ${lei(r.tot)}, plătesc eu ${lei(r.contrib)}, AFM ${lei(r.afm)}; ${S.prior?'am':'nu am'} mai primit bani publici pentru baterie → ${pts(t)} puncte.`;
   }
+  if(!$('docs').hidden&&typeof syncDocs==='function')syncDocs();
   $('msgs').innerHTML=msgs.map(([k,x])=>`<div class="${k}">${x}</div>`).join('');
 }
 function bars(r){
   return [['Contribuție proprie',r.pc,35],['Capacitate baterie',r.pk,40],['Fără finanțare anterioară',r.pp,25]]
     .map(([n,v,m])=>`<div class="bar"><div class="t"><span>${n}</span><span>${pts(v)} / ${m}</span></div><div class="track"><div class="fill" style="width:${v/m*100}%"></div></div></div>`).join('');
 }
+/* ===== Documente ===== */
+const MAXF=3*1024*1024, MAXT=9*1024*1024; const DOC={};
+$('cta').addEventListener('click',e=>{
+  if(!S.inv||S.inv==='unk'||$('cta').classList.contains('off'))return;
+  e.preventDefault(); $('docs').hidden=false;
+  if(!$('dNume').value)$('dNume').value=S.nume; if(!$('dTel').value)$('dTel').value=S.tel;
+  syncDocs(); $('docs').scrollIntoView({behavior:'smooth',block:'start'});
+});
+let SVC=null;
+$('svc').querySelectorAll('button').forEach(b=>b.onclick=()=>{SVC=+b.dataset.v;svcSync();});
+$('svcOk').onchange=svcSync;
+function svcSync(){
+  $('svc').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',SVC===+b.dataset.v));
+  $('svcYes').hidden=SVC!==1; $('svcNo').hidden=SVC!==0;
+  const open=SVC===1&&$('svcOk').checked; const was=$('docForm').hidden;
+  $('docForm').hidden=!open; if(open&&was){syncDocs();$('docForm').scrollIntoView({behavior:'smooth',block:'start'});}
+}
+$('dDiff').onchange=()=>{const on=$('dDiff').checked;$('dMontBox').hidden=!on;$('d_e').hidden=!on;$('dMont').required=on;if(!on){const i=$('d_e').querySelector('input');i.value='';delete DOC.e;setSt('e');}syncDocs();};
+function setSt(k,cls,msg){const d=$('d_'+k);d.classList.remove('ok','bad');if(cls)d.classList.add(cls);d.querySelector('.st').textContent=msg||'';}
+const mb=n=>(n/1048576).toLocaleString('ro-RO',{maximumFractionDigits:1})+' MB';
+document.querySelectorAll('.doc input[type=file]').forEach(inp=>inp.onchange=async()=>{
+  const k=inp.dataset.k,f=inp.files[0]; delete DOC[k];
+  if(!f){setSt(k);syncDocs();return;}
+  const bad=m=>{inp.value='';setSt(k,'bad',m);syncDocs();};
+  if(!/\.pdf$/i.test(f.name))return bad('Fișierul nu este PDF. Încarcă documentul în format PDF, nu poză (JPG/PNG).');
+  const head=new Uint8Array(await f.slice(0,5).arrayBuffer());
+  if(String.fromCharCode(...head)!=='%PDF-')return bad('Fișierul nu este un PDF valid.');
+  if(f.size>MAXF)return bad(`Fișierul are ${mb(f.size)}. Limita e 3 MB – scanează-l la o rezoluție mai mică.`);
+  DOC[k]=f.size; setSt(k,'ok','✓ '+f.name+' · '+mb(f.size)); syncDocs();
+});
+['dNume','dTel','dMail','dAdr','dMont','dGdpr'].forEach(id=>$(id).addEventListener('input',syncDocs));$('dGdpr').onchange=syncDocs;
+function syncDocs(){
+  const need=['b','c','d','f','g','h'].concat($('dDiff').checked?['e']:[]);
+  const tot=Object.values(DOC).reduce((a,b)=>a+b,0);
+  const miss=need.filter(k=>!DOC[k]);
+  const tel=$('dTel').value.replace(/\D/g,'');
+  const errs=[];
+  if(!window.__summary)errs.push('completează varianta în calculator (sus)');
+  if(!S.loc||!S.jud)errs.push('completează sus localitatea și județul unde se montează');
+  if($('dNume').value.trim().length<3)errs.push('numele');
+  if(tel.length<9)errs.push('telefonul');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('dMail').value.trim()))errs.push('e-mailul');
+  if($('dAdr').value.trim().length<5)errs.push('adresa de domiciliu');
+  if($('dDiff').checked&&$('dMont').value.trim().length<5)errs.push('adresa de montaj');
+  if(miss.length)errs.push('documentele '+miss.join(', '));
+  if(tot>MAXT)errs.push(`documente mai mici (acum ${mb(tot)} din maximum 9 MB)`);
+  if(!$('dGdpr').checked)errs.push('acordul pentru prelucrarea datelor');
+  $('dTot').textContent=tot?`Total încărcat: ${mb(tot)} din 9 MB`:'';
+  $('dVar').textContent=window.__summary?window.__summary.replace(/^Simulare Casa Verde Baterii 2026 \(MASI\)[^:]*: /,''):'–';
+  $('dSend').disabled=errs.length>0;
+  $('dInfo').textContent=errs.length?'Mai lipsește: '+errs.join('; ')+'.':'Totul e gata. Documentele ajung direct pe e-mailul MASI Smart Energy.';
+}
+$('docForm').onsubmit=e=>{
+  syncDocs(); if($('dSend').disabled){e.preventDefault();return;}
+  $('fVar').value=window.__summary; $('fLoc').value=S.loc+', jud. '+S.jud;
+  $('fSubj').value='Dosar Casa Verde Baterii 2026 – '+$('dNume').value.trim()+' – '+S.loc;
+  $('fNext').value=location.origin+location.pathname+'?trimis=1';
+  $('dSend').disabled=true;$('dSend').textContent='Se trimit documentele…';
+};
+if(/[?&]trimis=1/.test(location.search)){$('docs').hidden=false;$('docForm').hidden=true;$('sent').hidden=false;
+  $('sent').innerHTML='✅ <b>Am primit documentele tale.</b> Le verificăm și te sunăm în cel mai scurt timp ca să confirmăm dosarul și oferta.';
+  document.querySelector('#docs h2').hidden=true;document.querySelector('#docs .lead').hidden=true;setTimeout(()=>$('docs').scrollIntoView(),50);}
 $('copy').onclick=async()=>{
   if(!window.__summary){$('copied').textContent='Completează mai întâi pașii de mai sus.';return;}
   try{await navigator.clipboard.writeText(window.__summary);$('copied').textContent='Copiat! Trimite-ne mesajul pe Messenger sau WhatsApp.';}
