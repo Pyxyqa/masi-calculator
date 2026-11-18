@@ -255,38 +255,10 @@
       </div>
       <div class="tip" id="svcNo" hidden>Bine! Te înscrii singur în aplicația AFM, iar noi montăm bateria după aprobare. Pentru ofertă sau întrebări sună-ne la <b>0763 900 411</b> / <b>0744 614 511</b>.</div>
     </div>
-    <form id="docForm" hidden style="margin-top:16px" action="https://formsubmit.co/m.sima@masismartenergy.ro" method="POST" enctype="multipart/form-data" novalidate>
-      <input type="hidden" name="_subject" id="fSubj" value="Dosar Casa Verde Baterii 2026">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" id="fNext">
-      <input type="hidden" name="Varianta aleasa" id="fVar">
-      <input type="hidden" name="Localitate si judet montaj" id="fLoc">
-      <input type="hidden" name="Serviciu inscriere AFM" value="DA – acceptat 250,00 lei">
-      <div class="who">
-        <label class="wide">Nume și prenume<input name="Nume" id="dNume" autocomplete="name" required></label>
-        <label>Telefon<input name="Telefon" id="dTel" type="tel" inputmode="tel" autocomplete="tel" required></label>
-        <label>E-mail<input name="email" id="dMail" type="email" autocomplete="email" required></label>
-        <label class="wide">Adresa de domiciliu (stradă, nr., localitate, județ)<input name="Adresa domiciliu" id="dAdr" autocomplete="street-address" required></label>
-      </div>
-      <label class="chk"><input type="checkbox" id="dDiff">Adresa unde se montează sistemul este diferită de domiciliu</label>
-      <div class="who" id="dMontBox" hidden style="margin-top:10px">
-        <label class="wide">Adresa de montaj (stradă, nr.)<input name="Adresa montaj" id="dMont"></label>
-      </div>
-      <p class="step" style="margin-top:18px">Documentele pentru dosar</p>
-      <div class="pdfnote">📄 <b>Încarcă documentele așa cum le-ai primit</b> – online, pe e-mail sau scanate la scanner – <b>doar în format PDF</b>. Nu acceptăm poze făcute cu telefonul. Maximum 3 MB pe document și 9 MB în total.</div>
-        <div class="doc" id="d_b"><span class="k">b</span><div><b>Act de identitate</b><span class="req">obligatoriu</span><p>valabil la data înscrierii; scanat la scanner, nu fotografiat</p><input type="file" name="b_Act_de_identitate" accept="application/pdf,.pdf" data-k="b"><div class="st"></div></div></div>
-        <div class="doc" id="d_c"><span class="k">c</span><div><b>Certificat de atestare fiscală – buget de stat (ANAF)</b><span class="req">obligatoriu</span><p>emis pe numele solicitantului, în termen de valabilitate</p><input type="file" name="c_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="c"><div class="st"></div></div></div>
-        <div class="doc" id="d_d"><span class="k">d</span><div><b>Certificat de atestare fiscală – taxe locale, primăria de domiciliu</b><span class="req">obligatoriu</span><p>emis de primăria unde ai domiciliul, în termen de valabilitate</p><input type="file" name="d_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="d"><div class="st"></div></div></div>
-        <div class="doc" id="d_e" hidden><span class="k">e</span><div><b>Certificat de atestare fiscală – taxe locale, primăria unde se montează sistemul</b><span class="req">doar dacă montajul e la altă adresă</span><p>emis de primăria localității de montaj, în termen de valabilitate</p><input type="file" name="e_Certificat_de_atestare_fiscală" accept="application/pdf,.pdf" data-k="e"><div class="st"></div></div></div>
-        <div class="doc" id="d_f"><span class="k">f</span><div><b>Contract de prosumator</b><span class="req">obligatoriu</span><p>pe numele solicitantului, pentru locul de consum la care sunt racordate panourile</p><input type="file" name="f_Contract_de_prosumator" accept="application/pdf,.pdf" data-k="f"><div class="st"></div></div></div>
-        <div class="doc" id="d_g"><span class="k">g</span><div><b>Certificat de racordare</b><span class="req">obligatoriu</span><p>pentru același loc de consum ca în contractul de prosumator</p><input type="file" name="g_Certificat_de_racordare" accept="application/pdf,.pdf" data-k="g"><div class="st"></div></div></div>
-        <div class="doc" id="d_h"><span class="k">h</span><div><b>Factură de energie electrică</b><span class="req">obligatoriu</span><p>pe numele solicitantului, același loc de consum, nu mai veche de 6 luni</p><input type="file" name="h_Factură_de_energie_electrică" accept="application/pdf,.pdf" data-k="h"><div class="st"></div></div></div>
-      <p class="total" id="dTot"></p>
-      <label class="chk"><input type="checkbox" id="dGdpr" required><span>Am citit <a href="#gdprNote" onclick="document.getElementById('gdprNote').open=true">Nota de informare privind datele personale</a> și sunt de acord ca MASI Smart Energy S.R.L. să prelucreze datele și documentele mele pentru pregătirea dosarului Casa Verde Baterii 2026.</span></label>
-      <button class="send" id="dSend" type="submit" disabled>Trimite documentele</button>
-      <p class="sendinfo" id="dInfo"></p>
-    </form>
+    <div id="goBox" hidden style="margin-top:16px">
+      <a class="send" id="goTally" href="https://tally.so/r/6DKPgY" style="text-decoration:none">Continuă la încărcarea documentelor →</a>
+      <p class="sendinfo">Se deschide formularul securizat pentru documente (Tally, servere în UE). Ai nevoie de: act de identitate, certificatele de atestare fiscală (ANAF și primărie), contractul de prosumator, certificatul de racordare și o factură de energie de cel mult 6 luni, toate în PDF.</p>
+    </div>
   </section>
 </div>
 </main>
@@ -302,14 +274,14 @@
         <h4>Temeiul legal</h4>
         <ul><li>încheierea și executarea contractului de servicii de înscriere pe care îl soliciți (art. 6 alin. 1 lit. b GDPR);</li><li>îndeplinirea cerințelor programului AFM, care solicită aceste documente;</li><li>acordul tău, pe care îl poți retrage oricând, fără a afecta prelucrarea făcută până atunci.</li></ul>
         <h4>Cui transmitem datele</h4>
-        <ul><li>Administrației Fondului pentru Mediu (AFM), la depunerea dosarului;</li><li>furnizorilor tehnici care ne ajută să primim datele: FormSubmit (transmite formularul pe e-mailul nostru; furnizor din afara Uniunii Europene) și furnizorul nostru de e-mail;</li><li>autorităților, doar dacă legea o cere.</li></ul>
+        <ul><li>Administrației Fondului pentru Mediu (AFM), la depunerea dosarului;</li><li>furnizorilor tehnici care ne ajută să primim datele: Tally (Tally BV, Belgia – formularul în care încarci documentele, cu date stocate în Uniunea Europeană) și furnizorul nostru de e-mail, pe care primim notificarea;</li><li>autorităților, doar dacă legea o cere.</li></ul>
         <p>Nu vindem datele și nu le folosim pentru reclame.</p>
         <h4>Cât timp le păstrăm</h4>
         <p>Pe durata pregătirii și derulării dosarului în program și atât cât cer regulile AFM și legislația privind arhivarea documentelor justificative. Dacă nu continui înscrierea, ștergem documentele în cel mult 30 de zile.</p>
         <h4>Drepturile tale</h4>
         <p>Ai dreptul de acces, rectificare, ștergere, restricționare, portabilitate și opoziție, precum și dreptul de a retrage acordul. Ne scrii la m.sima@masismartenergy.ro. Poți depune plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), www.dataprotection.ro.</p>
         <h4>Pe această pagină</h4>
-        <p>Calculatorul nu folosește cookie-uri și nu salvează datele tale. Ce completezi rămâne în browser până apeși „Trimite documentele”.</p>
+        <p>Calculatorul nu folosește cookie-uri și nu salvează datele tale. Ce completezi în calculator rămâne în browser; documentele le încarci direct în formularul Tally.</p>
   </details>
 </footer>
 <script>
@@ -487,13 +459,11 @@ function bars(r){
   return [['Contribuție proprie',r.pc,35],['Capacitate baterie',r.pk,40],['Fără finanțare anterioară',r.pp,25]]
     .map(([n,v,m])=>`<div class="bar"><div class="t"><span>${n}</span><span>${pts(v)} / ${m}</span></div><div class="track"><div class="fill" style="width:${v/m*100}%"></div></div></div>`).join('');
 }
-/* ===== Documente ===== */
-const MAXF=3*1024*1024, MAXT=9*1024*1024; const DOC={};
+/* ===== Înscriere ===== */
 $('cta').addEventListener('click',e=>{
   if(!S.inv||S.inv==='unk'||$('cta').classList.contains('off'))return;
-  e.preventDefault(); $('docs').hidden=false;
-  if(!$('dNume').value)$('dNume').value=S.nume; if(!$('dTel').value)$('dTel').value=S.tel;
-  syncDocs(); $('docs').scrollIntoView({behavior:'smooth',block:'start'});
+  e.preventDefault(); $('docs').hidden=false; syncDocs();
+  $('docs').scrollIntoView({behavior:'smooth',block:'start'});
 });
 let SVC=null;
 $('svc').querySelectorAll('button').forEach(b=>b.onclick=()=>{SVC=+b.dataset.v;svcSync();});
@@ -501,52 +471,17 @@ $('svcOk').onchange=svcSync;
 function svcSync(){
   $('svc').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',SVC===+b.dataset.v));
   $('svcYes').hidden=SVC!==1; $('svcNo').hidden=SVC!==0;
-  const open=SVC===1&&$('svcOk').checked; const was=$('docForm').hidden;
-  $('docForm').hidden=!open; if(open&&was){syncDocs();$('docForm').scrollIntoView({behavior:'smooth',block:'start'});}
+  const open=SVC===1&&$('svcOk').checked; const was=$('goBox').hidden;
+  $('goBox').hidden=!open; syncDocs();
+  if(open&&was)$('goBox').scrollIntoView({behavior:'smooth',block:'center'});
 }
-$('dDiff').onchange=()=>{const on=$('dDiff').checked;$('dMontBox').hidden=!on;$('d_e').hidden=!on;$('dMont').required=on;if(!on){const i=$('d_e').querySelector('input');i.value='';delete DOC.e;setSt('e');}syncDocs();};
-function setSt(k,cls,msg){const d=$('d_'+k);d.classList.remove('ok','bad');if(cls)d.classList.add(cls);d.querySelector('.st').textContent=msg||'';}
-const mb=n=>(n/1048576).toLocaleString('ro-RO',{maximumFractionDigits:1})+' MB';
-document.querySelectorAll('.doc input[type=file]').forEach(inp=>inp.onchange=async()=>{
-  const k=inp.dataset.k,f=inp.files[0]; delete DOC[k];
-  if(!f){setSt(k);syncDocs();return;}
-  const bad=m=>{inp.value='';setSt(k,'bad',m);syncDocs();};
-  if(!/\.pdf$/i.test(f.name))return bad('Fișierul nu este PDF. Încarcă documentul în format PDF, nu poză (JPG/PNG).');
-  const head=new Uint8Array(await f.slice(0,5).arrayBuffer());
-  if(String.fromCharCode(...head)!=='%PDF-')return bad('Fișierul nu este un PDF valid.');
-  if(f.size>MAXF)return bad(`Fișierul are ${mb(f.size)}. Limita e 3 MB – scanează-l la o rezoluție mai mică.`);
-  DOC[k]=f.size; setSt(k,'ok','✓ '+f.name+' · '+mb(f.size)); syncDocs();
-});
-['dNume','dTel','dMail','dAdr','dMont','dGdpr'].forEach(id=>$(id).addEventListener('input',syncDocs));$('dGdpr').onchange=syncDocs;
 function syncDocs(){
-  const need=['b','c','d','f','g','h'].concat($('dDiff').checked?['e']:[]);
-  const tot=Object.values(DOC).reduce((a,b)=>a+b,0);
-  const miss=need.filter(k=>!DOC[k]);
-  const tel=$('dTel').value.replace(/\D/g,'');
-  const errs=[];
-  if(!window.__summary)errs.push('completează varianta în calculator (sus)');
-  if(!S.loc||!S.jud)errs.push('completează sus localitatea și județul unde se montează');
-  if($('dNume').value.trim().length<3)errs.push('numele');
-  if(tel.length<9)errs.push('telefonul');
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('dMail').value.trim()))errs.push('e-mailul');
-  if($('dAdr').value.trim().length<5)errs.push('adresa de domiciliu');
-  if($('dDiff').checked&&$('dMont').value.trim().length<5)errs.push('adresa de montaj');
-  if(miss.length)errs.push('documentele '+miss.join(', '));
-  if(tot>MAXT)errs.push(`documente mai mici (acum ${mb(tot)} din maximum 9 MB)`);
-  if(!$('dGdpr').checked)errs.push('acordul pentru prelucrarea datelor');
-  $('dTot').textContent=tot?`Total încărcat: ${mb(tot)} din 9 MB`:'';
-  $('dVar').textContent=window.__summary?window.__summary.replace(/^Simulare Casa Verde Baterii 2026 \(MASI\)[^:]*: /,''):'–';
-  $('dSend').disabled=errs.length>0;
-  $('dInfo').textContent=errs.length?'Mai lipsește: '+errs.join('; ')+'.':'Totul e gata. Documentele ajung direct pe e-mailul MASI Smart Energy.';
+  const v=window.__summary?window.__summary.replace(/^Simulare Casa Verde Baterii 2026 \(MASI\)[^:]*: /,''):'';
+  $('dVar').textContent=v||'–';
+  const q=new URLSearchParams({varianta:v,serviciu:'DA - acceptat 250,00 lei'});
+  $('goTally').href='https://tally.so/r/6DKPgY?'+q.toString();
 }
-$('docForm').onsubmit=e=>{
-  syncDocs(); if($('dSend').disabled){e.preventDefault();return;}
-  $('fVar').value=window.__summary; $('fLoc').value=S.loc+', jud. '+S.jud;
-  $('fSubj').value='Dosar Casa Verde Baterii 2026 – '+$('dNume').value.trim()+' – '+S.loc;
-  $('fNext').value=location.origin+location.pathname+'?trimis=1';
-  $('dSend').disabled=true;$('dSend').textContent='Se trimit documentele…';
-};
-if(/[?&]trimis=1/.test(location.search)){$('docs').hidden=false;$('docForm').hidden=true;$('sent').hidden=false;
+if(/[?&]trimis=1/.test(location.search)){$('docs').hidden=false;$('svcBox').hidden=true;$('sent').hidden=false;
   $('sent').innerHTML='✅ <b>Am primit documentele tale.</b> Le verificăm și te sunăm în cel mai scurt timp ca să confirmăm dosarul și oferta.';
   document.querySelector('#docs h2').hidden=true;document.querySelector('#docs .lead').hidden=true;setTimeout(()=>$('docs').scrollIntoView(),50);}
 $('copy').onclick=async()=>{
