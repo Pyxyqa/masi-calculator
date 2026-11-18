@@ -4,8 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calculator punctaj Casa Verde Baterii 2026 – MASI Smart Energy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0F285B; --blue:#1D4ED8; --green:#22A447; --ink:#0F285B; --muted:#5B6B8C;
@@ -13,7 +11,7 @@
     --err:#B42318; --errbg:#FEF0EF;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
   .hero{background:linear-gradient(100deg,#0F285B 0%,#1D4ED8 60%,#22A447 100%);color:#fff;padding:24px 20px 76px}
   .wrap{max-width:1000px;margin:0 auto}
   .brand{display:flex;align-items:center;gap:14px}
@@ -124,6 +122,10 @@
   .sendinfo{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
   .banner{background:#EEF9F1;border:1.5px solid #9CD8AE;border-radius:14px;padding:14px 16px;font-size:15px;margin-bottom:16px;line-height:1.5}
   .total{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .gdpr{margin-top:12px;border:1.5px solid var(--line);border-radius:14px;padding:4px 14px;background:#fff;font-size:13px;line-height:1.55}
+  .gdpr summary{cursor:pointer;font-weight:700;padding:8px 0;color:var(--navy)}
+  .gdpr h4{margin:12px 0 4px;font-size:13.5px}.gdpr p,.gdpr ul{margin:4px 0}.gdpr ul{padding-left:18px}
+  footer a{color:var(--navy)}
   footer{max-width:1000px;margin:6px auto 0;font-size:12px;color:var(--muted);line-height:1.55;padding:0 16px 30px}
 </style>
 </head>
@@ -281,7 +283,7 @@
         <div class="doc" id="d_g"><span class="k">g</span><div><b>Certificat de racordare</b><span class="req">obligatoriu</span><p>pentru același loc de consum ca în contractul de prosumator</p><input type="file" name="g_Certificat_de_racordare" accept="application/pdf,.pdf" data-k="g"><div class="st"></div></div></div>
         <div class="doc" id="d_h"><span class="k">h</span><div><b>Factură de energie electrică</b><span class="req">obligatoriu</span><p>pe numele solicitantului, același loc de consum, nu mai veche de 6 luni</p><input type="file" name="h_Factură_de_energie_electrică" accept="application/pdf,.pdf" data-k="h"><div class="st"></div></div></div>
       <p class="total" id="dTot"></p>
-      <label class="chk"><input type="checkbox" id="dGdpr" required>Sunt de acord ca MASI Smart Energy S.R.L. să prelucreze datele și documentele mele pentru pregătirea dosarului Casa Verde Baterii 2026. Ele ne sunt transmise pe e-mail prin serviciul FormSubmit.</label>
+      <label class="chk"><input type="checkbox" id="dGdpr" required><span>Am citit <a href="#gdprNote" onclick="document.getElementById('gdprNote').open=true">Nota de informare privind datele personale</a> și sunt de acord ca MASI Smart Energy S.R.L. să prelucreze datele și documentele mele pentru pregătirea dosarului Casa Verde Baterii 2026.</span></label>
       <button class="send" id="dSend" type="submit" disabled>Trimite documentele</button>
       <p class="sendinfo" id="dInfo"></p>
     </form>
@@ -290,7 +292,25 @@
 </main>
 <footer>
   Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye (obligatoriu la on-grid, opțional în rest) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
-  MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · 0763 900 411 / 0744 614 511
+  MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · <a href="#gdprNote" onclick="document.getElementById('gdprNote').open=true">Date personale (GDPR)</a> · 0763 900 411 / 0744 614 511
+  <details class="gdpr" id="gdprNote">
+        <summary>Nota de informare privind datele personale (GDPR)</summary>
+        <h4>Cine prelucrează datele</h4>
+        <p>MASI Smart Energy S.R.L., în calitate de operator. Contact: m.sima@masismartenergy.ro, 0763 900 411 / 0744 614 511.</p>
+        <h4>Ce date și de ce</h4>
+        <p>Numele, telefonul, e-mailul, adresa, varianta aleasă în calculator și documentele încărcate (act de identitate, certificate de atestare fiscală, contract de prosumator, certificat de racordare, factură de energie). Le folosim doar ca să verificăm eligibilitatea, să pregătim și să depunem dosarul tău în programul AFM Casa Verde Baterii 2026 și să te contactăm despre ofertă și montaj.</p>
+        <h4>Temeiul legal</h4>
+        <ul><li>încheierea și executarea contractului de servicii de înscriere pe care îl soliciți (art. 6 alin. 1 lit. b GDPR);</li><li>îndeplinirea cerințelor programului AFM, care solicită aceste documente;</li><li>acordul tău, pe care îl poți retrage oricând, fără a afecta prelucrarea făcută până atunci.</li></ul>
+        <h4>Cui transmitem datele</h4>
+        <ul><li>Administrației Fondului pentru Mediu (AFM), la depunerea dosarului;</li><li>furnizorilor tehnici care ne ajută să primim datele: FormSubmit (transmite formularul pe e-mailul nostru; furnizor din afara Uniunii Europene) și furnizorul nostru de e-mail;</li><li>autorităților, doar dacă legea o cere.</li></ul>
+        <p>Nu vindem datele și nu le folosim pentru reclame.</p>
+        <h4>Cât timp le păstrăm</h4>
+        <p>Pe durata pregătirii și derulării dosarului în program și atât cât cer regulile AFM și legislația privind arhivarea documentelor justificative. Dacă nu continui înscrierea, ștergem documentele în cel mult 30 de zile.</p>
+        <h4>Drepturile tale</h4>
+        <p>Ai dreptul de acces, rectificare, ștergere, restricționare, portabilitate și opoziție, precum și dreptul de a retrage acordul. Ne scrii la m.sima@masismartenergy.ro. Poți depune plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), www.dataprotection.ro.</p>
+        <h4>Pe această pagină</h4>
+        <p>Calculatorul nu folosește cookie-uri și nu salvează datele tale. Ce completezi rămâne în browser până apeși „Trimite documentele”.</p>
+  </details>
 </footer>
 <script>
 /* ===== Date din Tabel_preturi_calculator_MASI.xlsx ===== */
