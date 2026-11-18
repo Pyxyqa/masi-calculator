@@ -454,7 +454,7 @@ function show(r,msgs,blocked){
     $('verdict').textContent=t>=99.95?'Punctaj maxim – cele mai bune șanse 🎉':t>90?'Punctaj bun':t>=75?'Punctaj slab – vezi sfaturile de mai jos':'Punctaj foarte slab – vezi sfaturile de mai jos';
     $('bars').innerHTML=bars(r);
     $('pay').textContent=lei(r.contrib);$('afm').textContent=lei(r.afm);$('tot').textContent=lei(r.tot);
-    $('incl').textContent=r.inv?`Baterie ${lei(r.batTot)} + invertor ${r.ni.name} ${lei(r.inv)}. Instalare, configurare, verificare priză de pământ și punere în funcțiune incluse.`:'BMS și actualizare dosar prosumator incluse.';
+    $('incl').textContent=r.inv?`Include bateria și invertorul ${r.ni.name}, instalare, configurare, verificare priză de pământ, punere în funcțiune și actualizare dosar prosumator.`:'Include BMS și actualizare dosar prosumator.';
     $('cta').classList.remove('off');
     const inv=INVS.find(x=>x.id===S.inv);
     const cine=[S.nume,[S.loc,S.jud?'jud. '+S.jud:''].filter(Boolean).join(', ')].filter(Boolean).join(' – ');
