@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Calculator punctaj Casa Verde Baterii 2026 – MASI Smart Energy</title>
 <style>
   :root{
@@ -490,6 +493,16 @@ $('copy').onclick=async()=>{
   catch(e){$('copied').textContent=window.__summary;}
 };
 render();
+/* ===== Mereu ultima versiune ===== */
+const APP_VER='2026-11-18-a';
+fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
+  const m=t.match(/APP_VER='([^']+)'/);
+  if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
+    try{sessionStorage.setItem('upd_'+m[1],'1')}catch(e){}
+    const q=new URLSearchParams(location.search);q.set('v',m[1]);
+    location.replace(location.pathname+'?'+q.toString()+location.hash);
+  }
+}).catch(()=>{});
 </script>
 </body>
 </html>
