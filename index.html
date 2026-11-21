@@ -129,6 +129,10 @@
   .gdpr summary{cursor:pointer;font-weight:700;padding:8px 0;color:var(--navy)}
   .gdpr h4{margin:12px 0 4px;font-size:13.5px}.gdpr p,.gdpr ul{margin:4px 0}.gdpr ul{padding-left:18px}
   footer a{color:var(--navy)}
+  .modebox{margin:4px 0 16px;padding:14px;border-radius:14px;background:var(--soft)}
+  .modebox .step{margin-bottom:10px}
+  .modebox .seg{grid-template-columns:1fr}
+  .modebox .sub{background:#fff}
   footer{max-width:1000px;margin:6px auto 0;font-size:12px;color:var(--muted);line-height:1.55;padding:0 16px 30px}
 </style>
 </head>
@@ -171,7 +175,7 @@
         </div>
       </div>
       <div class="sub" id="newInvBox">
-        <p class="lbl">Invertor nou Deye <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
+        <p class="lbl">Invertor hibrid nou (Deye sau Victron) <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
         <div class="opts" id="newKeep"></div>
         <div class="cols">
           <div class="col mono" id="colM"><p class="colh">Monofazat</p></div>
@@ -186,32 +190,22 @@
     </div>
     <div class="section">
       <p class="step"><span class="num">3</span>Câte module dorești?</p>
-      <div class="stepper">
+      <div class="stepper" id="stepOne">
         <button id="minus" aria-label="Mai puține module">−</button>
         <span class="n" id="mods">1</span>
         <button id="plus" aria-label="Mai multe module">+</button>
-        <span class="cap">Capacitate totală: <b id="capTxt">–</b></span>
       </div>
+      <div id="stepMix" hidden>
+        <div class="stepper" style="margin-bottom:10px"><button id="m5" aria-label="Mai puține module de 5 kWh">−</button><span class="n" id="n5">1</span><button id="p5" aria-label="Mai multe module de 5 kWh">+</button><span class="cap">× LUNA2000-S1 <b>5 kWh</b></span></div>
+        <div class="stepper"><button id="m7" aria-label="Mai puține module de 6,9 kWh">−</button><span class="n" id="n7">1</span><button id="p7" aria-label="Mai multe module de 6,9 kWh">+</button><span class="cap">× LUNA2000-S1 <b>6,9 kWh</b></span></div>
+      </div>
+      <p class="cap" style="margin:10px 0 0;font-size:14px;color:var(--muted)">Capacitate totală: <b id="capTxt" style="color:var(--ink)">–</b></p>
     </div>
     <div class="section">
       <p class="step"><span class="num">4</span>Ai mai primit bani publici pentru o baterie?</p>
       <div class="seg two" id="prior">
         <button data-p="0" aria-pressed="true">Nu<small>ex. doar panouri prin Casa Verde</small></button>
         <button data-p="1" aria-pressed="false">Da<small>Casa Verde 2024, REPower etc.</small></button>
-      </div>
-    </div>
-    <div class="section">
-      <p class="step"><span class="num">5</span>Cum vrei să contribui?</p>
-      <div class="seg" id="mode">
-        <button data-m="min" aria-pressed="true">Contribuție minimă<small>AFM acoperă maximul posibil</small></button>
-        <button data-m="max" aria-pressed="false">Punctaj maxim<small>plătești cel puțin cât AFM</small></button>
-        <button data-m="custom" aria-pressed="false">Altă contribuție<small>vreau să-mi văd punctajul</small></button>
-      </div>
-      <div class="sub" id="customBox" hidden>
-        <p class="lbl">Ce contribuție dorești?</p>
-        <p class="ctx" id="customCtx"></p>
-        <div class="money-in"><input id="cIn" type="number" inputmode="numeric" min="0" step="100" value="10000"><span>lei</span></div>
-        <p class="note">💡 Pentru punctaj maxim la contribuție (35 de puncte), suma plătită de tine trebuie să fie cel puțin egală cu suma cerută de la AFM, adică minim jumătate din valoarea proiectului.</p>
       </div>
     </div>
   </section>
@@ -227,6 +221,20 @@
         <div class="val"><div><b id="score">–</b><br><span>din 100 puncte</span></div></div>
       </div>
       <div class="verdict" id="verdict"></div>
+    <div id="modeBox" class="modebox">
+      <p class="step"><span class="num">5</span>Cum vrei să contribui?</p>
+      <div class="seg" id="mode">
+        <button data-m="min" aria-pressed="true">Contribuție minimă<small>AFM acoperă maximul posibil</small></button>
+        <button data-m="max" aria-pressed="false">Punctaj maxim<small>plătești cel puțin cât AFM</small></button>
+        <button data-m="custom" aria-pressed="false">Altă contribuție<small>vreau să-mi văd punctajul</small></button>
+      </div>
+      <div class="sub" id="customBox" hidden>
+        <p class="lbl">Ce contribuție dorești?</p>
+        <p class="ctx" id="customCtx"></p>
+        <div class="money-in"><input id="cIn" type="number" inputmode="numeric" min="0" step="100" value="10000"><span>lei</span></div>
+        <p class="note">💡 Pentru punctaj maxim la contribuție (35 de puncte), suma plătită de tine trebuie să fie cel puțin egală cu suma cerută de la AFM, adică minim jumătate din valoarea proiectului.</p>
+      </div>
+    </div>
       <div id="bars"></div>
       <div class="money">
         <div><small>Plătești tu</small><b id="pay">–</b></div>
@@ -266,7 +274,7 @@
 </div>
 </main>
 <footer>
-  Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye (obligatoriu la on-grid, opțional în rest) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
+  Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye sau Victron (obligatoriu la on-grid, opțional în rest; la Victron e inclus și smartmeterul Victron) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
   MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · <a href="#gdprNote" onclick="document.getElementById('gdprNote').open=true">Date personale (GDPR)</a> · 0763 900 411 / 0744 614 511
   <details class="gdpr" id="gdprNote">
         <summary>Nota de informare privind datele personale (GDPR)</summary>
@@ -297,7 +305,9 @@ const BATS=[
   {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV'},
   {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:13000, fix:0+5000,    type:'HV'},
   {id:'BYD2.56',name:'BYD Battery-Box HVS 2,56 kWh',kwh:2.56,mod:4600, fix:2800+5000, type:'HV'},
-  {id:'RES3.97',name:'Fronius Reserva 3,97 kWh', kwh:3.97,  mod:8200,  fix:5600+5000, type:'HV'}
+  {id:'RES3.97',name:'Fronius Reserva 3,97 kWh', kwh:3.97,  mod:8200,  fix:5600+5000, type:'HV'},
+  // combinație Huawei: module LUNA 5 kWh + LUNA 6,9 kWh (doar la invertor Huawei)
+  {id:'LUNMIX', name:'Huawei LUNA2000-S1 combinat', kwh:0, mod:0, fix:0+5000, type:'HV', mix:1}
 ];
 const NEWINV=[
   {ph:'M',id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3500},
@@ -305,7 +315,11 @@ const NEWINV=[
   {ph:'T',id:'DEY6T', name:'Deye SUN-6K-SG05LP3', d:'6 kW · trifazat',   price:8200+3500},
   {ph:'T',id:'DEY8T', name:'Deye SUN-8K-SG05LP3', d:'8 kW · trifazat',   price:8600+3500},
   {ph:'T',id:'DEY10T',name:'Deye SUN-10K-SG05LP3',d:'10 kW · trifazat',  price:9000+3500},
-  {ph:'T',id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3500}
+  {ph:'T',id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3500},
+  // Victron: invertor + montaj + smartmeter Victron (800 lei) inclus la orice variantă
+  {ph:'M',id:'VIC3M',  name:'Victron MultiPlus-II 48/3000', d:'3 kW · smartmeter inclus',   price:3100+3500+800, vic:1},
+  {ph:'M',id:'VIC4.5M',name:'Victron MultiPlus-II 48/4k5',  d:'4,5 kW · smartmeter inclus', price:4000+3500+800, vic:1},
+  {ph:'M',id:'VIC5M',  name:'Victron MultiPlus-II 48/5000', d:'5 kW · smartmeter inclus',   price:4500+3500+800, vic:1}
 ];
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
@@ -319,14 +333,16 @@ const INVS=[
 const NEED_NEW=id=>id==='grid'||id==='swap';
 // compatibilitate baterii: invertor nou Deye -> doar LV; Huawei -> LUNA; Fronius -> Reserva sau BYD
 function allowed(){
-  if(S.newInv&&S.newInv!=='keep')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
-  if(S.inv==='hua')return {ids:['LUN5','LUN7'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000. Pentru altă baterie alege un invertor nou Deye.'};
+  const ni=NEWINV.find(x=>x.id===S.newInv);
+  if(ni&&ni.vic)return {ids:['FEL16','FEL23.5'],why:'Invertorul Victron este compatibil doar cu bateriile Felicity Solar.'};
+  if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
+  if(S.inv==='hua')return {ids:['LUN5','LUN7','LUNMIX'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000 – poți combina module de 5 kWh și 6,9 kWh. Pentru altă baterie alege un invertor nou.'};
   if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness și Deye.'};
-  if(S.inv==='vic')return {ids:['FEL16','FEL23.5'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar. Pentru altă baterie alege un invertor nou Deye.'};
-  if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou Deye.'};
+  if(S.inv==='vic')return {ids:['FEL16','FEL23.5'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar. Pentru altă baterie alege un invertor nou.'};
+  if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou.'};
   return null;
 }
-const S={ph:null,tip:'',tel:'',nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,mode:'min',c:10000,prior:0};
+const S={ph:null,tip:'',tel:'',nume:'',loc:'',jud:'',inv:null,newInv:null,bat:null,mods:1,n5:1,n7:1,mode:'min',c:10000,prior:0};
 const $=id=>document.getElementById(id);
 const lei=n=>Math.round(n).toLocaleString('ro-RO')+' lei';
 const pts=n=>(Math.round(n*10)/10).toLocaleString('ro-RO');
@@ -345,11 +361,14 @@ mkOpts($('newKeep'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără inve
 ['M','T'].forEach(ph=>{const box=document.createElement('div');box.style.display='grid';box.style.gap='8px';$('col'+ph).appendChild(box);
   mkOpts(box,NEWINV.filter(x=>x.ph===ph).map(x=>({id:x.id,name:x.name,d:x.d.split('·')[0].trim()})),'newInv');});
 $('phase').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.ph=b.dataset.ph;render()});
-mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
+mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:b.mix?'module de 5 kWh + 6,9 kWh, în ce combinație vrei':(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
+  if(b.mix){S.n5=1;S.n7=1;return;}
   S.mods=Math.max(1,Math.ceil(10/b.kwh-1e-9));});
 $('minus').onclick=()=>{S.mods=Math.max(1,S.mods-1);render()};
 $('plus').onclick=()=>{S.mods=Math.min(20,S.mods+1);render()};
+$('m5').onclick=()=>{S.n5=Math.max(S.n7>0?0:1,S.n5-1);render()};$('p5').onclick=()=>{S.n5=Math.min(10,S.n5+1);render()};
+$('m7').onclick=()=>{S.n7=Math.max(S.n5>0?0:1,S.n7-1);render()};$('p7').onclick=()=>{S.n7=Math.min(10,S.n7+1);render()};
 $('mode').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;render()});
 $('prior').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.prior=+b.dataset.p;render()});
 ['nume','loc','jud','invTip','tel'].forEach(k=>$(k).oninput=e=>{S[k==='invTip'?'tip':k]=e.target.value.trim();render(true)});
@@ -357,8 +376,10 @@ $('cIn').oninput=e=>{S.c=Math.max(0,+e.target.value||0);render(true)};
 
 function calc(){
   const b=BATS.find(x=>x.id===S.bat); if(!b) return null;
-  const kwh=S.mods*b.kwh;
-  const batTot=S.mods*b.mod+b.fix;
+  const L5=BATS.find(x=>x.id==='LUN5'),L7=BATS.find(x=>x.id==='LUN7');
+  const kwh=b.mix?S.n5*L5.kwh+S.n7*L7.kwh:S.mods*b.kwh;
+  const batTot=b.mix?S.n5*L5.mod+S.n7*L7.mod+b.fix:S.mods*b.mod+b.fix;
+  const batTxt=b.mix?[S.n5?`${S.n5} × LUNA2000-S1 5 kWh`:'',S.n7?`${S.n7} × LUNA2000-S1 6,9 kWh`:''].filter(Boolean).join(' + '):`${S.mods} × ${b.name}`;
   const ni=NEWINV.find(x=>x.id===S.newInv)||null;
   const inv=ni?ni.price:0;
   const tot=batTot+inv;
@@ -369,13 +390,13 @@ function calc(){
   const pk=clamp(4*kwh-20,0,40);
   const pc=afm>0?clamp(37.5*contrib/afm-2.5,10,35):35;
   const pp=S.prior?0:25;
-  return {b,kwh,batTot,inv,ni,tot,afmMax,cmin,contrib,afm,pk,pc,pp,total:pk+pc+pp};
+  return {b,batTxt,kwh,batTot,inv,ni,tot,afmMax,cmin,contrib,afm,pk,pc,pp,total:pk+pc+pp};
 }
 
 function render(fromInput){
   // marcaje
   $('invs').querySelectorAll('.opt').forEach(e=>e.setAttribute('aria-pressed',e.dataset.id===S.inv));
-  $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid Deye)':S.newInv==='keep'?'(păstrezi invertorul actual – apasă din nou pe buton dacă vrei unul nou)':'(opțional – dacă vrei să schimbi invertorul)';
+  $('niNote').textContent=NEED_NEW(S.inv)?'(obligatoriu: alege invertorul hibrid nou)':S.newInv==='keep'?'(păstrezi invertorul actual – apasă din nou pe buton dacă vrei unul nou)':'(opțional – dacă vrei să schimbi invertorul)';
   $('phase').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ph===S.ph));
   const curNi=NEWINV.find(x=>x.id===S.newInv); if(curNi&&S.ph&&curNi.ph!==S.ph)S.newInv=null;
   ['M','T'].forEach(ph=>$('col'+ph).classList.toggle('off',S.newInv==='keep'||(!!S.ph&&S.ph!==ph)));
@@ -385,6 +406,11 @@ function render(fromInput){
   if(al&&S.bat&&!al.ids.includes(S.bat)){S.bat=null;}
   $('bats').querySelectorAll('.opt').forEach(e=>{e.disabled=!!al&&!al.ids.includes(e.dataset.id);e.setAttribute('aria-pressed',e.dataset.id===S.bat);});
   $('batHint').textContent=al?al.why:'';
+  const mixOk=S.inv==='hua'&&!(S.newInv&&S.newInv!=='keep');
+  const mixBtn=$('bats').querySelector('.opt[data-id="LUNMIX"]'); if(mixBtn)mixBtn.style.display=mixOk?'':'none';
+  if(!mixOk&&S.bat==='LUNMIX')S.bat=null;
+  const isMix=S.bat==='LUNMIX'; $('stepOne').style.display=isMix?'none':''; $('stepMix').hidden=!isMix;
+  $('n5').textContent=S.n5; $('n7').textContent=S.n7;
   $('mods').textContent=S.mods;
   $('mode').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===S.mode));
   $('prior').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.p===S.prior));
@@ -413,7 +439,7 @@ function render(fromInput){
   const msgs=[];let blocked=false;
   if(!S.inv)msgs.push(['tip','Începe cu pasul 1: ce invertor ai acum.']);
   if(!S.ph&&S.inv&&S.inv!=='unk')msgs.push(['tip','Spune-ne și ce branșament ai: monofazat sau trifazat.']);
-  if(NEED_NEW(S.inv)&&!(S.newInv&&S.newInv!=='keep')){msgs.push(['tip','Alege invertorul hibrid Deye nou pe care îl dorești.']);blocked=true;}
+  if(NEED_NEW(S.inv)&&!(S.newInv&&S.newInv!=='keep')){msgs.push(['tip','Alege invertorul hibrid nou pe care îl dorești.']);blocked=true;}
   if(!r){
     $('capTxt').textContent='–';
     if(S.inv)msgs.push(['tip','Alege bateria la pasul 2.']);
@@ -449,11 +475,11 @@ function show(r,msgs,blocked){
     $('verdict').textContent=t>=99.95?'Punctaj maxim – cele mai bune șanse 🎉':t>90?'Punctaj bun':t>=75?'Punctaj slab – vezi sfaturile de mai jos':'Punctaj foarte slab – vezi sfaturile de mai jos';
     $('bars').innerHTML=bars(r);
     $('pay').textContent=lei(r.contrib);$('afm').textContent=lei(r.afm);$('tot').textContent=lei(r.tot);
-    $('incl').textContent=r.inv?`Include bateria și invertorul ${r.ni.name}, instalare, configurare, verificare priză de pământ, punere în funcțiune și actualizare dosar prosumator.`:'Include BMS și actualizare dosar prosumator.';
+    $('incl').textContent=r.inv?`Include bateria și invertorul ${r.ni.name}${r.ni.vic?' (smartmeter Victron inclus)':''}, instalare, configurare, verificare priză de pământ, punere în funcțiune și actualizare dosar prosumator.`:'Include BMS și actualizare dosar prosumator.';
     $('cta').classList.remove('off');
     const inv=INVS.find(x=>x.id===S.inv);
     const cine=[S.nume,[S.loc,S.jud?'jud. '+S.jud:''].filter(Boolean).join(', ')].filter(Boolean).join(' – ');
-    window.__summary=`Simulare Casa Verde Baterii 2026 (MASI)${cine?' – '+cine:''}: branșament ${S.ph==='M'?'monofazat':S.ph==='T'?'trifazat':'-'}; invertor actual ${inv?inv.name.toLowerCase():'-'}${r.ni?', invertor nou '+r.ni.name:''}; baterie ${S.mods} × ${r.b.name} = ${kwhTxt(r.kwh)}; valoare proiect ${lei(r.tot)}, plătesc eu ${lei(r.contrib)}, AFM ${lei(r.afm)}; ${S.prior?'am':'nu am'} mai primit bani publici pentru baterie → ${pts(t)} puncte.`;
+    window.__summary=`Simulare Casa Verde Baterii 2026 (MASI)${cine?' – '+cine:''}: branșament ${S.ph==='M'?'monofazat':S.ph==='T'?'trifazat':'-'}; invertor actual ${inv?inv.name.toLowerCase():'-'}${r.ni?', invertor nou '+r.ni.name+(r.ni.vic?' + smartmeter Victron':''):''}; baterie ${r.batTxt} = ${kwhTxt(r.kwh)}; valoare proiect ${lei(r.tot)}, plătesc eu ${lei(r.contrib)}, AFM ${lei(r.afm)}; ${S.prior?'am':'nu am'} mai primit bani publici pentru baterie → ${pts(t)} puncte.`;
   }
   if(!$('docs').hidden&&typeof syncDocs==='function')syncDocs();
   $('msgs').innerHTML=msgs.map(([k,x])=>`<div class="${k}">${x}</div>`).join('');
@@ -494,7 +520,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-18-a';
+const APP_VER='2026-11-21-a';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
