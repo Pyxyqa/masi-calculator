@@ -336,9 +336,9 @@ const NEED_NEW=id=>id==='grid'||id==='swap';
 function allowed(){
   const ni=NEWINV.find(x=>x.id===S.newInv);
   if(ni&&ni.vic)return {ids:['FEL16','FEL23.5','DAH5.12'],why:'Invertorul Victron este compatibil doar cu bateriile Felicity Solar și DAHAI.'};
-  if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16','DAH5.12'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness, Deye și DAHAI.'};
+  if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='hua')return {ids:['LUN5','LUN7','LUNMIX'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000 – poți combina module de 5 kWh și 6,9 kWh. Pentru altă baterie alege un invertor nou.'};
-  if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16','DAH5.12'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness, Deye și DAHAI.'};
+  if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='vic')return {ids:['FEL16','FEL23.5','DAH5.12'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar și DAHAI. Pentru altă baterie alege un invertor nou.'};
   if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou.'};
   return null;
@@ -521,7 +521,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-e';
+const APP_VER='2026-11-21-f';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
