@@ -175,7 +175,7 @@
         </div>
       </div>
       <div class="sub" id="newInvBox">
-        <p class="lbl">Invertor hibrid nou (Deye sau Victron) <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
+        <p class="lbl">Invertor hibrid nou (Deye, Victron sau Fronius) <span id="niNote" style="font-weight:500;color:var(--muted)"></span></p>
         <div class="opts" id="newKeep"></div>
         <div class="cols">
           <div class="col mono" id="colM"><p class="colh">Monofazat</p></div>
@@ -274,7 +274,7 @@
 </div>
 </main>
 <footer>
-  Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye sau Victron (obligatoriu la on-grid, opțional în rest; la Victron e inclus și smartmeterul Victron) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
+  Estimare după varianta oficială a ghidului de finanțare AFM Casa Verde Baterii 2026, publicată la 17-11-2026. Punctaj: contribuție proprie maxim 35 p = 37,5 × (contribuția ta ÷ suma cerută de la AFM) − 2,5 (minim 10 p); capacitate maxim 40 p = 4 × kWh − 20 (maximul de la 15 kWh); fără finanțare anterioară pentru stocare 25 p. Finanțarea AFM: cel mult 75% din valoarea bateriei și cel mult 15.000 lei; capacitate minimă 10 kWh. Invertorul nou Deye, Victron sau Fronius (obligatoriu la on-grid, opțional în rest; la Victron e inclus și smartmeterul Victron) se plătește de client și nu e finanțat de AFM. Prețurile MASI sunt cu TVA și se confirmă printr-o ofertă personalizată; finanțarea se aprobă exclusiv de AFM.<br>
   MASI Smart Energy S.R.L. · m.sima@masismartenergy.ro · <a href="#gdprNote" onclick="document.getElementById('gdprNote').open=true">Date personale (GDPR)</a> · 0763 900 411 / 0744 614 511
   <details class="gdpr" id="gdprNote">
         <summary>Nota de informare privind datele personale (GDPR)</summary>
@@ -303,13 +303,16 @@ const BATS=[
   {id:'DYN16',  name:'Dyness 16,07 kWh',         kwh:16.07, mod:9900,  fix:0+5000,    type:'LV'},
   {id:'DEY16',  name:'Deye 16,07 kWh',           kwh:16.07, mod:11000, fix:0+5000,    type:'LV'},
   {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:3200,  fix:0+5000,    type:'LV', def:3},
-  {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV', def:3},
-  {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:13000, fix:0+5000,    type:'HV'},
+  {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:8000,  fix:0+4200,    type:'HV', def:3, luna:1},
+  {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:9800,  fix:0+4200,    type:'HV', luna:1},
   {id:'BYD2.56',name:'BYD Battery-Box HVS 2,56 kWh',kwh:2.56,mod:4600, fix:2800+5000, type:'HV'},
   {id:'RES3.97',name:'Fronius Reserva 3,97 kWh', kwh:3.97,  mod:8200,  fix:5600+5000, type:'HV'},
   // combinație Huawei: module LUNA 5 kWh + LUNA 6,9 kWh (doar la invertor Huawei)
-  {id:'LUNMIX', name:'Huawei LUNA2000-S1 combinat', kwh:0, mod:0, fix:0+5000, type:'HV', mix:1}
+  {id:'LUNMIX', name:'Huawei LUNA2000-S1 combinat', kwh:0, mod:0, fix:0+4200, type:'HV', mix:1, luna:1}
 ];
+// Huawei LUNA: 1 BMS (3.200 lei) la 2–3 module, 2 BMS la 4 sau 6 module; permis: 2, 3, 4, 6 module
+const LUNA_BMS=3200, LSTEPS=[2,3,4,6];
+const lunaBms=n=>n<=3?1:2;
 const NEWINV=[
   {ph:'M',id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3000},
   {ph:'M',id:'DEY8M', name:'Deye SUN-8K-SG06LP1', d:'8 kW · monofazat',  price:6100+3000},
@@ -320,7 +323,9 @@ const NEWINV=[
   // Victron: invertor + montaj + smartmeter Victron (800 lei) inclus la orice variantă
   {ph:'M',id:'VIC3M',  name:'Victron MultiPlus-II 48/3000', d:'3 kW · smartmeter inclus',   price:3100+3000+800, vic:1},
   {ph:'M',id:'VIC4.5M',name:'Victron MultiPlus-II 48/4k5',  d:'4,5 kW · smartmeter inclus', price:4000+3000+800, vic:1},
-  {ph:'M',id:'VIC5M',  name:'Victron MultiPlus-II 48/5000', d:'5 kW · smartmeter inclus',   price:4500+3000+800, vic:1}
+  {ph:'M',id:'VIC5M',  name:'Victron MultiPlus-II 48/5000', d:'5 kW · smartmeter inclus',   price:4500+3000+800, vic:1},
+  // Fronius GEN24 Plus nou (trifazat, HV): doar BYD sau Fronius Reserva
+  {ph:'T',id:'GEN12', name:'Fronius Symo GEN24 12.0 Plus', d:'12 kW · trifazat', price:15000+3000, fro:1}
 ];
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
@@ -335,6 +340,7 @@ const NEED_NEW=id=>id==='grid'||id==='swap';
 // compatibilitate baterii: invertor nou Deye -> doar LV; Huawei -> LUNA; Fronius -> Reserva sau BYD
 function allowed(){
   const ni=NEWINV.find(x=>x.id===S.newInv);
+  if(ni&&ni.fro)return {ids:['RES3.97','BYD2.56'],why:'Invertorul Fronius GEN24 Plus este compatibil doar cu bateriile BYD Battery-Box HVS și Fronius Reserva.'};
   if(ni&&ni.vic)return {ids:['FEL16','FEL23.5','DAH5.12'],why:'Invertorul Victron este compatibil doar cu bateriile Felicity Solar și DAHAI.'};
   if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
   if(S.inv==='hua')return {ids:['LUN5','LUN7','LUNMIX'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000 – poți combina module de 5 kWh și 6,9 kWh. Pentru altă baterie alege un invertor nou.'};
@@ -366,10 +372,13 @@ mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:b.mix?'module de 5 kWh + 6,
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
   if(b.mix){S.n5=1;S.n7=1;return;}
   S.mods=b.def||Math.max(1,Math.ceil(10/b.kwh-1e-9));});
-$('minus').onclick=()=>{S.mods=Math.max(1,S.mods-1);render()};
-$('plus').onclick=()=>{S.mods=Math.min(20,S.mods+1);render()};
-$('m5').onclick=()=>{S.n5=Math.max(S.n7>0?0:1,S.n5-1);render()};$('p5').onclick=()=>{S.n5=Math.min(10,S.n5+1);render()};
-$('m7').onclick=()=>{S.n7=Math.max(S.n5>0?0:1,S.n7-1);render()};$('p7').onclick=()=>{S.n7=Math.min(10,S.n7+1);render()};
+const curB=()=>BATS.find(x=>x.id===S.bat);
+const lStep=(n,d)=>{const i=LSTEPS.indexOf(n);if(i<0)return LSTEPS.find(x=>x>=n)||6;return LSTEPS[Math.max(0,Math.min(LSTEPS.length-1,i+d))];};
+$('minus').onclick=()=>{const b=curB();S.mods=b&&b.luna?lStep(S.mods,-1):Math.max(1,S.mods-1);render()};
+$('plus').onclick=()=>{const b=curB();S.mods=b&&b.luna?lStep(S.mods,1):Math.min(20,S.mods+1);render()};
+function mixStep(k,d){const t=S.n5+S.n7;let nt=t+d;if(nt===5)nt+=d;if(nt<2||nt>6)return;const v=S[k]+(nt-t);if(v<0)return;S[k]=v;render();}
+$('m5').onclick=()=>mixStep('n5',-1);$('p5').onclick=()=>mixStep('n5',1);
+$('m7').onclick=()=>mixStep('n7',-1);$('p7').onclick=()=>mixStep('n7',1);
 $('mode').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;render()});
 $('prior').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.prior=+b.dataset.p;render()});
 ['nume','loc','jud','invTip','tel'].forEach(k=>$(k).oninput=e=>{S[k==='invTip'?'tip':k]=e.target.value.trim();render(true)});
@@ -379,8 +388,9 @@ function calc(){
   const b=BATS.find(x=>x.id===S.bat); if(!b) return null;
   const L5=BATS.find(x=>x.id==='LUN5'),L7=BATS.find(x=>x.id==='LUN7');
   const kwh=b.mix?S.n5*L5.kwh+S.n7*L7.kwh:S.mods*b.kwh;
-  const batTot=b.mix?S.n5*L5.mod+S.n7*L7.mod+b.fix:S.mods*b.mod+b.fix;
-  const batTxt=b.mix?[S.n5?`${S.n5} × LUNA2000-S1 5 kWh`:'',S.n7?`${S.n7} × LUNA2000-S1 6,9 kWh`:''].filter(Boolean).join(' + '):`${S.mods} × ${b.name}`;
+  const nMod=b.mix?S.n5+S.n7:S.mods, nBms=b.luna?lunaBms(nMod):0;
+  const batTot=(b.mix?S.n5*L5.mod+S.n7*L7.mod+b.fix:S.mods*b.mod+b.fix)+nBms*LUNA_BMS;
+  const batTxt=(b.mix?[S.n5?`${S.n5} × LUNA2000-S1 5 kWh`:'',S.n7?`${S.n7} × LUNA2000-S1 6,9 kWh`:''].filter(Boolean).join(' + '):`${S.mods} × ${b.name}`)+(nBms?` + ${nBms} BMS`:'');
   const ni=NEWINV.find(x=>x.id===S.newInv)||null;
   const inv=ni?ni.price:0;
   const tot=batTot+inv;
@@ -447,7 +457,7 @@ function render(fromInput){
     $('customCtx').textContent='Alege bateria ca să vezi valoarea totală a proiectului.';
     show(null,msgs,true);return;
   }
-  $('capTxt').textContent=kwhTxt(r.kwh);
+  $('capTxt').textContent=kwhTxt(r.kwh)+(r.b.luna?` · ${lunaBms(r.b.mix?S.n5+S.n7:S.mods)} BMS inclus`:'');
   $('customCtx').innerHTML=`Valoarea totală a proiectului: <b>${lei(r.tot)}</b> · contribuția minimă: <b>${lei(r.cmin)}</b> · pentru 35 p: <b>${lei(Math.max(r.cmin,r.tot/2))}</b>`;
   if(r.kwh<10){msgs.push(['err',`Programul finanțează doar baterii de minimum 10 kWh. Acum ai ${kwhTxt(r.kwh)} – adaugă module.`]);blocked=true;}
   if(S.mode==='custom'&&r.contrib<r.cmin-0.5){msgs.push(['err',`Contribuția aleasă este sub minimul posibil pentru această configurație. Contribuția minimă este ${lei(r.cmin)}.`]);blocked=true;}
@@ -521,7 +531,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-f';
+const APP_VER='2026-11-21-h';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
