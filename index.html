@@ -302,6 +302,7 @@ const BATS=[
   {id:'FEL23.5',name:'Felicity Solar 23,5 kWh',  kwh:23.5,  mod:16600, fix:0+5000,    type:'LV'},
   {id:'DYN16',  name:'Dyness 16,07 kWh',         kwh:16.07, mod:9900,  fix:0+5000,    type:'LV'},
   {id:'DEY16',  name:'Deye 16,07 kWh',           kwh:16.07, mod:11000, fix:0+5000,    type:'LV'},
+  {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:9500,  fix:0+5000,    type:'LV'},
   {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV'},
   {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:13000, fix:0+5000,    type:'HV'},
   {id:'BYD2.56',name:'BYD Battery-Box HVS 2,56 kWh',kwh:2.56,mod:4600, fix:2800+5000, type:'HV'},
@@ -310,16 +311,16 @@ const BATS=[
   {id:'LUNMIX', name:'Huawei LUNA2000-S1 combinat', kwh:0, mod:0, fix:0+5000, type:'HV', mix:1}
 ];
 const NEWINV=[
-  {ph:'M',id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3500},
-  {ph:'M',id:'DEY8M', name:'Deye SUN-8K-SG06LP1', d:'8 kW · monofazat',  price:6100+3500},
-  {ph:'T',id:'DEY6T', name:'Deye SUN-6K-SG05LP3', d:'6 kW · trifazat',   price:8200+3500},
-  {ph:'T',id:'DEY8T', name:'Deye SUN-8K-SG05LP3', d:'8 kW · trifazat',   price:8600+3500},
-  {ph:'T',id:'DEY10T',name:'Deye SUN-10K-SG05LP3',d:'10 kW · trifazat',  price:9000+3500},
-  {ph:'T',id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3500},
+  {ph:'M',id:'DEY6M', name:'Deye SUN-6K-SG06LP1', d:'6 kW · monofazat',  price:4500+3000},
+  {ph:'M',id:'DEY8M', name:'Deye SUN-8K-SG06LP1', d:'8 kW · monofazat',  price:6100+3000},
+  {ph:'T',id:'DEY6T', name:'Deye SUN-6K-SG05LP3', d:'6 kW · trifazat',   price:8200+3000},
+  {ph:'T',id:'DEY8T', name:'Deye SUN-8K-SG05LP3', d:'8 kW · trifazat',   price:8600+3000},
+  {ph:'T',id:'DEY10T',name:'Deye SUN-10K-SG05LP3',d:'10 kW · trifazat',  price:9000+3000},
+  {ph:'T',id:'DEY12T',name:'Deye SUN-12K-SG05LP3',d:'12 kW · trifazat',  price:10000+3000},
   // Victron: invertor + montaj + smartmeter Victron (800 lei) inclus la orice variantă
-  {ph:'M',id:'VIC3M',  name:'Victron MultiPlus-II 48/3000', d:'3 kW · smartmeter inclus',   price:3100+3500+800, vic:1},
-  {ph:'M',id:'VIC4.5M',name:'Victron MultiPlus-II 48/4k5',  d:'4,5 kW · smartmeter inclus', price:4000+3500+800, vic:1},
-  {ph:'M',id:'VIC5M',  name:'Victron MultiPlus-II 48/5000', d:'5 kW · smartmeter inclus',   price:4500+3500+800, vic:1}
+  {ph:'M',id:'VIC3M',  name:'Victron MultiPlus-II 48/3000', d:'3 kW · smartmeter inclus',   price:3100+3000+800, vic:1},
+  {ph:'M',id:'VIC4.5M',name:'Victron MultiPlus-II 48/4k5',  d:'4,5 kW · smartmeter inclus', price:4000+3000+800, vic:1},
+  {ph:'M',id:'VIC5M',  name:'Victron MultiPlus-II 48/5000', d:'5 kW · smartmeter inclus',   price:4500+3000+800, vic:1}
 ];
 const INVS=[
   {id:'hua',  name:'Invertor hibrid Huawei', d:'SUN2000'},
@@ -334,11 +335,11 @@ const NEED_NEW=id=>id==='grid'||id==='swap';
 // compatibilitate baterii: invertor nou Deye -> doar LV; Huawei -> LUNA; Fronius -> Reserva sau BYD
 function allowed(){
   const ni=NEWINV.find(x=>x.id===S.newInv);
-  if(ni&&ni.vic)return {ids:['FEL16','FEL23.5'],why:'Invertorul Victron este compatibil doar cu bateriile Felicity Solar.'};
-  if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness și Deye.'};
+  if(ni&&ni.vic)return {ids:['FEL16','FEL23.5','DAH5.12'],why:'Invertorul Victron este compatibil doar cu bateriile Felicity Solar și DAHAI.'};
+  if(ni)return {ids:['FEL16','FEL23.5','DYN16','DEY16','DAH5.12'],why:'Invertorul hibrid Deye este compatibil doar cu bateriile Felicity Solar, Dyness, Deye și DAHAI.'};
   if(S.inv==='hua')return {ids:['LUN5','LUN7','LUNMIX'],why:'La invertorul Huawei se poate monta doar bateria Huawei LUNA2000 – poți combina module de 5 kWh și 6,9 kWh. Pentru altă baterie alege un invertor nou.'};
-  if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness și Deye.'};
-  if(S.inv==='vic')return {ids:['FEL16','FEL23.5'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar. Pentru altă baterie alege un invertor nou.'};
+  if(S.inv==='dey')return {ids:['FEL16','FEL23.5','DYN16','DEY16','DAH5.12'],why:'La invertorul Deye se pot monta bateriile Felicity Solar, Dyness, Deye și DAHAI.'};
+  if(S.inv==='vic')return {ids:['FEL16','FEL23.5','DAH5.12'],why:'La invertorul Victron se pot monta doar bateriile Felicity Solar și DAHAI. Pentru altă baterie alege un invertor nou.'};
   if(S.inv==='fro')return {ids:['RES3.97','BYD2.56'],why:'La invertorul Fronius se pot monta doar bateriile Fronius Reserva sau BYD Battery-Box HVS. Pentru altă baterie alege un invertor nou.'};
   return null;
 }
@@ -520,7 +521,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-b';
+const APP_VER='2026-11-21-c';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
