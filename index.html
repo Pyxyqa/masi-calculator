@@ -302,8 +302,8 @@ const BATS=[
   {id:'FEL23.5',name:'Felicity Solar 23,5 kWh',  kwh:23.5,  mod:16600, fix:0+5000,    type:'LV'},
   {id:'DYN16',  name:'Dyness 16,07 kWh',         kwh:16.07, mod:9900,  fix:0+5000,    type:'LV'},
   {id:'DEY16',  name:'Deye 16,07 kWh',           kwh:16.07, mod:11000, fix:0+5000,    type:'LV'},
-  {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:3200,  fix:0+5000,    type:'LV'},
-  {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV'},
+  {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:3200,  fix:0+5000,    type:'LV', def:3},
+  {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV', def:3},
   {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:13000, fix:0+5000,    type:'HV'},
   {id:'BYD2.56',name:'BYD Battery-Box HVS 2,56 kWh',kwh:2.56,mod:4600, fix:2800+5000, type:'HV'},
   {id:'RES3.97',name:'Fronius Reserva 3,97 kWh', kwh:3.97,  mod:8200,  fix:5600+5000, type:'HV'},
@@ -365,7 +365,7 @@ $('phase').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.ph=b.dataset.p
 mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:b.mix?'module de 5 kWh + 6,9 kWh, în ce combinație vrei':(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
   if(b.mix){S.n5=1;S.n7=1;return;}
-  S.mods=Math.max(1,Math.ceil(10/b.kwh-1e-9));});
+  S.mods=b.def||Math.max(1,Math.ceil(10/b.kwh-1e-9));});
 $('minus').onclick=()=>{S.mods=Math.max(1,S.mods-1);render()};
 $('plus').onclick=()=>{S.mods=Math.min(20,S.mods+1);render()};
 $('m5').onclick=()=>{S.n5=Math.max(S.n7>0?0:1,S.n5-1);render()};$('p5').onclick=()=>{S.n5=Math.min(10,S.n5+1);render()};
@@ -521,7 +521,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-d';
+const APP_VER='2026-11-21-e';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
