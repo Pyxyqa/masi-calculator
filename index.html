@@ -302,7 +302,7 @@ const BATS=[
   {id:'FEL23.5',name:'Felicity Solar 23,5 kWh',  kwh:23.5,  mod:16600, fix:0+5000,    type:'LV'},
   {id:'DYN16',  name:'Dyness 16,07 kWh',         kwh:16.07, mod:9900,  fix:0+5000,    type:'LV'},
   {id:'DEY16',  name:'Deye 16,07 kWh',           kwh:16.07, mod:11000, fix:0+5000,    type:'LV'},
-  {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:9500,  fix:0+5000,    type:'LV'},
+  {id:'DAH5.12',name:'DAHAI 5,12 kWh',           kwh:5.12,  mod:3200,  fix:0+5000,    type:'LV'},
   {id:'LUN5',   name:'Huawei LUNA2000-S1 5 kWh', kwh:5,     mod:9400,  fix:0+5000,    type:'HV'},
   {id:'LUN7',   name:'Huawei LUNA2000-S1 6,9 kWh',kwh:6.9,  mod:13000, fix:0+5000,    type:'HV'},
   {id:'BYD2.56',name:'BYD Battery-Box HVS 2,56 kWh',kwh:2.56,mod:4600, fix:2800+5000, type:'HV'},
@@ -521,7 +521,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-c';
+const APP_VER='2026-11-21-d';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
