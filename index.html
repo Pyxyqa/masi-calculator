@@ -359,7 +359,7 @@ function mkOpts(el,list,key,onPick){
 mkOpts($('invs'),INVS,'inv',o=>{if(NEED_NEW(o.id)&&S.newInv==='keep')S.newInv=null;});
 mkOpts($('newKeep'),[{id:'keep',name:'Păstrez invertorul actual',d:'fără invertor nou'}],'newInv');
 ['M','T'].forEach(ph=>{const box=document.createElement('div');box.style.display='grid';box.style.gap='8px';$('col'+ph).appendChild(box);
-  mkOpts(box,NEWINV.filter(x=>x.ph===ph).map(x=>({id:x.id,name:x.name,d:x.d.split('·')[0].trim()})),'newInv');});
+  mkOpts(box,NEWINV.filter(x=>x.ph===ph).map(x=>({id:x.id,name:x.name,d:x.vic?x.d:x.d.split('·')[0].trim()})),'newInv');});
 $('phase').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.ph=b.dataset.ph;render()});
 mkOpts($('bats'),BATS.map(b=>({id:b.id,name:b.name,d:b.mix?'module de 5 kWh + 6,9 kWh, în ce combinație vrei':(b.type==='LV'?'joasă tensiune (LV)':'înaltă tensiune (HV)')})),'bat',o=>{
   const b=BATS.find(x=>x.id===o.id); // propune nr. minim de module pentru 10 kWh
@@ -520,7 +520,7 @@ $('copy').onclick=async()=>{
 };
 render();
 /* ===== Mereu ultima versiune ===== */
-const APP_VER='2026-11-21-a';
+const APP_VER='2026-11-21-b';
 fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{
   const m=t.match(/APP_VER='([^']+)'/);
   if(m&&m[1]!==APP_VER&&!sessionStorage.getItem('upd_'+m[1])){
